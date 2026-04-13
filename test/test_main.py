@@ -1,16 +1,23 @@
+import allure
+
 from locators.locators_main import MainPage
+from conftest import web_browser
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
 
+
+@allure.title('Проверка кнопки вакансии')
+@allure.feature('Проверка кнопки вакансии')
 def test_go_to_vacancies(web_browser):
     page = MainPage(web_browser)
 
-    # ✅ принять cookies
-    if page.btn_access.is_presented():
-        page.btn_access.click()
+    with allure.step('Проверка кнопки вакансии'):
+        # ✅ принять cookies
+        if page.btn_access.is_presented():
+            page.btn_access.click()
 
 
 
@@ -25,7 +32,6 @@ def test_go_to_vacancies(web_browser):
 
     # ✅ проверка
     assert "careers" in page.get_current_url()
-
 
 
 
