@@ -92,7 +92,7 @@ class WebPage(object):
         response = requests.post(validator_url, headers=headers, data=data.encode('utf-8'))
         results = response.json()
         return results
-
+#111
     def get_current_url(self):
         """ Возвращает URL текущего браузера. """
         return self._web_driver.current_url
