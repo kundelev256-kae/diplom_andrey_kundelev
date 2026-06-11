@@ -84,15 +84,15 @@ class WebPage(object):
         """ Отменить фокус iframe. """
         self._web_driver.switch_to.default_content()
 
-    def validate_html(self, url):
+    def validate_html(self, url):#проверяет код веб-страниц на соответствие официальным стандартам интернета
         """Функция для проверки валидации HTML страницы"""
         validator_url = 'https://validator.w3.org/nu/?out=json'
         headers = {'Content-Type': 'text/html; charset=utf-8'}
         data = requests.get(url).text
         response = requests.post(validator_url, headers=headers, data=data.encode('utf-8'))
         results = response.json()
-        return results
-#111
+        return results #Возвращает JSON с результатами проверки валидности HTML
+
     def get_current_url(self):
         """ Возвращает URL текущего браузера. """
         return self._web_driver.current_url
@@ -117,17 +117,25 @@ class WebPage(object):
 
         ignore_list = ignore_list or []
 
-        logs = self._web_driver.get_log('browser')
+        logs = self._web_driver.get_log('browser') #Получает логи браузера ('browser').
+
         for log_message in logs:
-            if log_message['level'] != 'WARNING':
+            if log_message['level'] != 'WARNING': #Если уровень не 'WARNING' — игнорирует.
                 ignore = False
-                for issue in ignore_list:
+                for issue in ignore_list: #Если сообщение содержит что-то из ignore_list — игнорирует.
                     if issue in log_message['message']:
                         ignore = True
                         break
-
+                #Иначе — assert с ошибкой JS.
                 assert ignore, 'JS error "{0}" on the page!'.format(log_message)
-
+    #Это самый сложный метод — ожидает полной загрузки страницы через несколько проверок
+    #timeout = 60 — максимальное время ожидания(сек).
+    #check_js_complete = True — проверить document.readyState == 'complete'.
+    #check_page_changes = False — убедиться, что HTML не меняется.
+    #check_images = False — проверить загрузку изображений.
+    #wait_for_element = None — ожидать появления элемента.
+    #wait_for_xpath_to_disappear = '' — ожидать исчезновения XPATH.
+    #sleep_time = 2 — начальная задержка.
     def wait_page_loaded(self, timeout=60, check_js_complete=True,
                          check_page_changes=False, check_images=False,
                          wait_for_element=None,
@@ -147,12 +155,12 @@ class WebPage(object):
         k = 0
 
         if sleep_time:
-            time.sleep(sleep_time)
+            time.sleep(sleep_time) #Начальная задержка time.sleep(sleep_time)
 
         # Получить исходный код страницы для отслеживания изменений в HTML:
         source = ''
         try:
-            source = self._web_driver.page_source
+            source = self._web_driver.page_source #апоминает исходный HTML
         except:
             pass
 
