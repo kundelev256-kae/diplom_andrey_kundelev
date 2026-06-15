@@ -1,3 +1,4 @@
+import time
 import uuid
 import allure
 import pytest
@@ -27,14 +28,17 @@ def chrome_options():
 
 @pytest.fixture
 def web_browser(request):
-    # Используем переданные опции
-    browser = webdriver.Chrome()
+    options = Options()
+    options.add_argument('--disable-gpu')
+    options.add_argument('--no-sandbox')
+    options.add_argument('--disable-dev-shm-usage')
+    options.set_capability('goog:loggingPrefs', {'browser': 'ALL'})
+
+    browser = webdriver.Chrome(options=options)
     browser.maximize_window()
 
-    # Вернуть экземпляр браузера в тестовый пример:
     yield browser
 
-    # Безопасная проверка статуса теста
     failed = False
     if hasattr(request.node, "rep_call") and request.node.rep_call.failed:
         failed = True
@@ -43,27 +47,22 @@ def web_browser(request):
 
     if failed:
         try:
-            # Делаем фон белым для лучшего скриншота
             browser.execute_script("document.body.style.background = 'white';")
 
-            # Создаем скриншот
             screenshot_path = f'screenshots/{str(uuid.uuid4())}.png'
             browser.save_screenshot(screenshot_path)
 
-            # Прикрепляем скриншот к Allure
             allure.attach(
                 browser.get_screenshot_as_png(),
                 name=f"{request.function.__name__}_screenshot",
                 attachment_type=allure.attachment_type.PNG
             )
 
-            # Логируем URL и логи браузера
             print('URL: ', browser.current_url)
             print('Browser logs:')
             for log in browser.get_log('browser'):
                 print(log)
 
-            # Также прикрепляем логи к Allure
             logs = "\n".join([str(log) for log in browser.get_log('browser')])
             allure.attach(
                 logs,
@@ -74,19 +73,8 @@ def web_browser(request):
         except Exception as e:
             print(f"Ошибка при создании отчетности: {e}")
 
-    # Всегда закрываем браузер
+    time.sleep(2)
     browser.quit()
-
-
-@pytest.hookimpl(hookwrapper=True, tryfirst=True)
-def pytest_runtest_makereport(item):
-    # Эта функция помогает определить, что какой-то тест не прошел
-    # и передать эту информацию в отчет:
-
-    outcome = yield
-    rep = outcome.get_result()
-    setattr(item, "rep_" + rep.when, rep)
-    return rep
 
 
 def pytest_addoption(parser):
