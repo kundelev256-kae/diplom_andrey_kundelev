@@ -1,3 +1,4 @@
+import os
 import time
 import uuid
 import allure
@@ -34,6 +35,9 @@ def web_browser(request):
     options.add_argument('--disable-dev-shm-usage')
     options.set_capability('goog:loggingPrefs', {'browser': 'ALL'})
 
+    if request.config.getoption("--headless"):
+        options.add_argument("--headless=new")
+
     browser = webdriver.Chrome(options=options)
     browser.maximize_window()
 
@@ -47,6 +51,7 @@ def web_browser(request):
 
     if failed:
         try:
+            worker_id = request.config.getoption("rsyncdir", default="") or ""
             browser.execute_script("document.body.style.background = 'white';")
 
             screenshot_path = f'screenshots/{str(uuid.uuid4())}.png'
@@ -78,7 +83,8 @@ def web_browser(request):
 
 
 def pytest_addoption(parser):
-    parser.addoption("--browser")
+    parser.addoption("--browser", default="chrome", help="Browser to run tests (chrome, firefox)")
+    parser.addoption("--headless", action="store_true", default=False, help="Run tests in headless mode")
 
 
 def get_test_case_docstring(item):
