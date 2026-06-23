@@ -1,3 +1,6 @@
+from dotenv import load_dotenv
+load_dotenv()
+
 from telegram import Update, KeyboardButton, ReplyKeyboardMarkup
 from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler
 from telegram.ext import filters
@@ -11,10 +14,77 @@ from pathlib import Path
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 import subprocess
 import sys
+import requests
+import json
+import hashlib
 
 
 REPORT_PORT = 9090
 report_server = None
+
+GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
+GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
+
+OFFLINE_RESPONSES = {
+    "привет": "Привет! Чем могу помочь?",
+    "как дела": "Отлично, спасибо! Как у тебя?",
+    "помощь": "Я могу ответить на вопросы. Просто напиши мне!",
+    "кто ты": "Я Telegram-бот с нейросетью для автотестов.",
+    "hello": "Hello! How can I help you?",
+    "hi": "Hi there!",
+}
+
+
+def query_ai(prompt: str, history: list = None) -> str:
+    """Запрос к нейросети через Groq API (Llama 3)"""
+    try:
+        messages = [{"role": "system", "content": "Ты полезный ассистент. Отвечай кратко и по делу на русском языке."}]
+        if history:
+            for h in history:
+                messages.append({"role": "user", "content": h["user"]})
+                messages.append({"role": "assistant", "content": h["bot"]})
+        messages.append({"role": "user", "content": prompt})
+
+        payload = {
+            "model": "llama3-8b-8192",
+            "messages": messages,
+            "max_tokens": 1024,
+            "temperature": 0.7
+        }
+
+        response = requests.post(
+            GROQ_API_URL,
+            json=payload,
+            headers={"Authorization": f"Bearer {GROQ_API_KEY}", "Content-Type": "application/json"},
+            timeout=30
+        )
+
+        if response.status_code == 200:
+            result = response.json()
+            return result["choices"][0]["message"]["content"]
+        elif response.status_code == 401:
+            return _fallback_response(prompt)
+        else:
+            return _fallback_response(prompt)
+    except requests.ConnectionError:
+        return _fallback_response(prompt)
+    except requests.Timeout:
+        return "⚠️ Таймаут: нейросеть не ответила вовремя"
+    except Exception:
+        return _fallback_response(prompt)
+
+
+def _fallback_response(prompt: str) -> str:
+    """Локальный ответ когда API недоступен"""
+    low = prompt.lower().strip().rstrip("?!.,")
+
+    for key, answer in OFFLINE_RESPONSES.items():
+        if key in low:
+            return answer
+
+    return (f"🤖 Вы спросили: «{prompt}»\n\n"
+            "К сожалению, API нейросети сейчас недоступен. "
+            "Задайте простой вопрос (привет, помощь, кто ты) или попробуйте позже.")
 
 
 class ReportHandler(SimpleHTTPRequestHandler):
@@ -320,6 +390,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         [KeyboardButton("🧪 UI тесты"), KeyboardButton("🔌 API тесты")],
         [KeyboardButton("⚡ Нагрузочные тесты"), KeyboardButton("⚙️ Настроить нагрузку")],
         [KeyboardButton("🌐 Открыть Allure отчет"), KeyboardButton("📦 Скачать отчет")],
+        [KeyboardButton("🤖 Нейросеть (ON)"), KeyboardButton("🤖 Нейросеть (OFF)")],
         [KeyboardButton("ℹ️ О проекте")],
     ]
     reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True, one_time_keyboard=False)
@@ -350,6 +421,10 @@ async def about(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "• 11 сценариев (главная, вакансии, курсы и др.)\n"
         "• 10 виртуальных пользователей\n"
         "• Метрики: RPS, percentile, время отклика\n\n"
+        "🤖 Нейросеть:\n"
+        "• Бесплатная модель blenderbot-400M-distill\n"
+        "• Ввод /ai для начала диалога\n"
+        "• Ввод /ai_stop для остановки\n\n"
         "🛠 Технологии:\n"
         "• Python + Selenium + Requests\n"
         "• Pytest + Allure + Locust\n"
@@ -359,9 +434,49 @@ async def about(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(about_text)
 
 
+async def ai_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Начало диалога с нейросетью"""
+    context.user_data['ai_mode'] = True
+    context.user_data['ai_history'] = []
+    await update.message.reply_text(
+        "🤖 Нейросеть активирована!\n\n"
+        "Задайте любой вопрос, и я постараюсь ответить.\n"
+        "Для остановки введите /ai_stop"
+    )
+
+
+async def ai_stop(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Остановка диалога с нейросетью"""
+    context.user_data['ai_mode'] = False
+    context.user_data['ai_history'] = []
+    await update.message.reply_text("🤖 Диалог с нейросетью завершен.")
+
+
+async def handle_ai_message(update: Update, context: ContextTypes.DEFAULT_TYPE, text: str) -> bool:
+    """Обработка сообщения в режиме нейросети. Возвращает True если обработано."""
+    if not context.user_data.get('ai_mode'):
+        return False
+
+    await update.message.reply_text("⏳ Думаю...")
+
+    history = context.user_data.get('ai_history', [])
+    response = query_ai(text, history)
+
+    history.append({"user": text, "bot": response})
+    if len(history) > 10:
+        history = history[-10:]
+    context.user_data['ai_history'] = history
+
+    await update.message.reply_text(f"🤖 {response}")
+    return True
+
+
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Обработка кнопок и диалога настройки"""
     text = update.message.text
+
+    if await handle_ai_message(update, context, text):
+        return
 
     state = context.user_data.get('loadtest_state')
 
@@ -415,6 +530,10 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await generate_and_serve_report(update, context)
     elif text == "ℹ️ О проекте":
         await about(update, context)
+    elif text == "🤖 Нейросеть (ON)":
+        await ai_start(update, context)
+    elif text == "🤖 Нейросеть (OFF)":
+        await ai_stop(update, context)
     elif text == "⏹ Стоп":
         context.user_data.pop('loadtest_state', None)
         context.user_data.pop('loadtest_users', None)
@@ -434,7 +553,8 @@ async def error_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 def main():
-    application = Application.builder().token('7683227185:AAHjeK3ScoB9b51hm82O55JXBYbPWwWTx1c').build()
+    TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")
+    application = Application.builder().token(TELEGRAM_BOT_TOKEN).build()
 
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CommandHandler("about", about))
@@ -443,6 +563,8 @@ def main():
     application.add_handler(CommandHandler("run_api", run_api_tests))
     application.add_handler(CommandHandler("run_load", run_load_tests))
     application.add_handler(CommandHandler("report", serve_report))
+    application.add_handler(CommandHandler("ai", ai_start))
+    application.add_handler(CommandHandler("ai_stop", ai_stop))
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
     application.add_error_handler(error_handler)

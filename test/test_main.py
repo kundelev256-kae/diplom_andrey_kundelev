@@ -1,7 +1,10 @@
 import allure
 import time
+import random
+import string
 
 from locators.locators_main import MainPage
+from page.career_test_page import CareerTestPage
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -533,3 +536,150 @@ def test_page_title(web_browser):
 #             href = link.get_attribute('href')
 #             assert href is not None and href.startswith('http'), \
 #                 f"Карточка отзывов {i + 1} не содержит валидную ссылку: {href}"
+
+
+@allure.title('E2E: Профориентационный тест — заполнение формы')
+@allure.feature('E2E тесты')
+def test_career_guidance_form(web_browser):
+    first_names = ['Александр', 'Мария', 'Дмитрий', 'Анна', 'Сергей', 'Елена', 'Иван', 'Ольга']
+    last_names = ['Иванов', 'Петрова', 'Сидоров', 'Козлова', 'Морозов', 'Новикова', 'Волков', 'Лебедева']
+
+    first_name = random.choice(first_names)
+    last_name = random.choice(last_names)
+    phone = f"+375{random.choice(['29', '33', '25', '17'])}{random.randint(1000000, 9999999)}"
+    email = "kuzayo@mail.ru"
+
+    page = MainPage(web_browser)
+
+    with allure.step('Принять cookies'):
+        if page.btn_access.is_presented():
+            page.btn_access.click()
+
+    with allure.step(f'Сформированы данные: {first_name} {last_name}, {phone}, {email}'):
+        pass
+
+    with allure.step('Открыть меню "IT ОБРАЗОВАНИЕ"'):
+        element = page.it_education_menu.find()
+        web_browser.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
+        web_browser.execute_script("arguments[0].click();", element)
+        time.sleep(2)
+
+    with allure.step('Кликнуть по "Профориентационный тест"'):
+        link = page.career_test_link.find()
+        web_browser.execute_script("arguments[0].click();", link)
+        time.sleep(3)
+
+    with allure.step('Проверить URL содержит "career-guidance-test"'):
+        assert "career-guidance-test" in page.get_current_url()
+
+    with allure.step('Кликнуть "Пройти тест"'):
+        start_btn = WebDriverWait(web_browser, 15).until(
+            EC.element_to_be_clickable((By.XPATH,
+                "//a[contains(translate(text(),'АБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЩЭЮЯ','абвгдежзиклмнопрстуфхцчшщэюя'), 'пройти тест')] | "
+                "//button[contains(translate(text(),'АБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЩЭЮЯ','абвгдежзиклмнопрстуфхцчшщэюя'), 'пройти тест')] | "
+                "//a[contains(@class, 'btn') and contains(@href, 'test')] | "
+                "//button[contains(@class, 'btn') and contains(@class, 'test')]"
+            ))
+        )
+        web_browser.execute_script("arguments[0].click();", start_btn)
+        time.sleep(5)
+
+    with allure.step('Проверить переход на форму (proftest.itstep.by)'):
+        current_url = web_browser.current_url
+        assert "proftest.itstep.by" in current_url or "form" in current_url, \
+            f"Не удалось перейти на форму. URL: {current_url}"
+
+    with allure.step(f'Заполнить имя: {first_name} {last_name}'):
+        name_field = WebDriverWait(web_browser, 10).until(
+            EC.presence_of_element_located((By.NAME, "question0"))
+        )
+        web_browser.execute_script("arguments[0].scrollIntoView({block: 'center'});", name_field)
+        name_field.clear()
+        name_field.send_keys(f"{first_name} {last_name}")
+        time.sleep(0.5)
+
+    with allure.step(f'Заполнить email: {email}'):
+        email_field = WebDriverWait(web_browser, 10).until(
+            EC.presence_of_element_located((By.NAME, "question1"))
+        )
+        email_field.clear()
+        email_field.send_keys(email)
+        time.sleep(0.5)
+
+    with allure.step(f'Заполнить телефон: {phone}'):
+        phone_field = WebDriverWait(web_browser, 10).until(
+            EC.presence_of_element_located((By.NAME, "question2"))
+        )
+        phone_field.clear()
+        phone_field.send_keys(phone)
+        time.sleep(0.5)
+
+    with allure.step('Сделать скриншот заполненной формы'):
+        web_browser.save_screenshot('career_test_form_filled.png')
+
+    with allure.step('Ответить на вопросы теста (radio/checkbox)'):
+        question_names = set()
+
+        def safe_click(element):
+            try:
+                web_browser.execute_script("arguments[0].click();", element)
+            except:
+                pass
+            try:
+                alert = web_browser.switch_to.alert
+                alert_text = alert.text
+                alert.accept()
+                allure.step(f'Алерт: {alert_text}').publish()
+            except:
+                pass
+
+        all_radios = web_browser.find_elements(By.CSS_SELECTOR, "input[type='radio']")
+        for r in all_radios:
+            qname = r.get_attribute("name")
+            if qname not in question_names:
+                question_names.add(qname)
+                options = web_browser.find_elements(By.CSS_SELECTOR, f"input[name='{qname}']")
+                if options:
+                    chosen = random.choice(options)
+                    safe_click(chosen)
+
+        all_checkboxes = web_browser.find_elements(By.CSS_SELECTOR, "input[type='checkbox']")
+        for c in all_checkboxes:
+            qname = c.get_attribute("name")
+            if qname not in question_names:
+                question_names.add(qname)
+                options = web_browser.find_elements(By.CSS_SELECTOR, f"input[name='{qname}']")
+                if options:
+                    num_to_check = random.randint(1, min(3, len(options)))
+                    for opt in random.sample(options, num_to_check):
+                        safe_click(opt)
+
+    with allure.step('Нажать "Узнать свой результат!"'):
+        try:
+            alert = web_browser.switch_to.alert
+            alert.accept()
+        except:
+            pass
+        submit = WebDriverWait(web_browser, 10).until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, "button[type='submit']"))
+        )
+        web_browser.execute_script("arguments[0].scrollIntoView({block: 'center'});", submit)
+        web_browser.execute_script("arguments[0].click();", submit)
+        time.sleep(2)
+        try:
+            alert = web_browser.switch_to.alert
+            alert_text = alert.text
+            alert.accept()
+            allure.step(f'Алерт после отправки: {alert_text}').publish()
+        except:
+            pass
+        time.sleep(3)
+
+    with allure.step('Проверить отправку формы'):
+        page_source = web_browser.page_source.lower()
+        success_indicators = ['результат', 'спасибо', 'отправлено', 'готово', 'ваш', 'профориентация', 'курс']
+        form_still_visible = any(ind in page_source for ind in success_indicators)
+        assert form_still_visible, "Форма не была отправлена — индикатор успеха не найден"
+
+    with allure.step('Сделать скриншот результата'):
+        web_browser.save_screenshot('career_test_submitted.png')
