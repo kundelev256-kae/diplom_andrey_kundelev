@@ -7,7 +7,24 @@ on:
     branches: [main]
 
 jobs:
-  test:
+  unit-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt pytest-cov pytest-asyncio
+
+      - name: Run unit tests
+        run: python -m pytest test/unit/ -v --tb=short --cov=bot --cov=api --cov=page --cov-report=term-missing
+
+  integration-tests:
     runs-on: ubuntu-latest
 
     steps:
@@ -27,4 +44,4 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Run tests
-        run: python -m pytest test/ --headless -v
+        run: python -m pytest test/ --headless -v --ignore=test/unit
