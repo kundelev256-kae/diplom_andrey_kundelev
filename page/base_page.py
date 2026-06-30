@@ -18,7 +18,7 @@ class WebPage(object): #базовый класс для всех страниц
     def __setattr__(self, name, value): #Магический метод __setattr__ вызывается при любой попытке присвоить значение атрибуту
         #Это позволяет писать в тесте:page.username = "tom"  # автоматически найдёт элемент и впишет текст
         if not name.startswith('_'): #Если атрибут не начинается с _ (то есть публичный):
-            self.__getattribute__(name)._set_value(self._web_driver, value) #Получает этот атрибут через __getattribute__.
+            self.__getattribute__(y)._set_value(self._web_driver, value) #Получает этот атрибут через __getattribute__.
         else:
             super(WebPage, self).__setattr__(name, value) #Использует стандартное присваивание через super().
 
