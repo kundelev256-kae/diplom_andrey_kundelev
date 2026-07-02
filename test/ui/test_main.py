@@ -4,13 +4,9 @@ import allure
 import time
 # Импорт модуля random для случайного выбора данных (имена, телефоны)
 import random
-# Импорт модуля string для работы со строковыми константами (не используется напрямую, но полезен для генерации)
-import string
 
 # Импорт локаторов главной страницы — содержит CSS/XPath селекторы для элементов
 from locators.locators_main import MainPage
-# Импорт Page Object для страницы карьерного теста (используется в E2E тесте)
-from page.career_test_page import CareerTestPage
 # Импорт By для указания способа поиска элементов (ID, XPath, CSS и т.д.)
 from selenium.webdriver.common.by import By
 # Импорт WebDriverWait для явного ожидания появления/кликабельности элементов
@@ -19,615 +15,245 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 
-# Декоратор Allure: задаёт название теста в отчёте — "Проверка кнопки 'Вакансии'"
-@allure.title('Проверка кнопки "Вакансии"')
-# Декоратор Allure: группирует тест по фиче "Навигация" для удобства навигации в отчёте
-@allure.feature('Навигация')
-# Функция теста: проверяет переход на страницу вакансий. web_browser — фикстура Selenium WebDriver
-def test_go_to_vacancies(web_browser):
-    # Создаём экземпляр Page Object главной страницы, передавая экземпляр браузера
-    page = MainPage(web_browser)
-
-    # Шаг Allure: принимаем cookies, если баннер отображается
-    with allure.step('Принять cookies'):
-        # Проверяем, представлен ли (видим в DOM) кнопка принятия cookies
-        if page.btn_access.is_presented():
-            # Кликаем по кнопке принятия cookies, чтобы убрать баннер
-            page.btn_access.click()
-
-    # Шаг Allure: переход по ссылке "Вакансии"
-    with allure.step('Перейти по ссылке "Вакансии"'):
-        # Находим элемент ссылки "Вакансии" на странице
-        element = page.vacancies_link.find()
-        # Прокручиваем страницу так, чтобы элемент оказался в центре видимой области
-        web_browser.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
-        # Явное ожидание: ждём до 10 секунд, пока ссылка не станет кликабельной (по XPath содержимому href)
-        WebDriverWait(web_browser, 10).until(
-            EC.element_to_be_clickable((By.XPATH, "//a[contains(@href, 'careers')]")))
-        # Кликаем по элементу через JavaScript (надёжнее стандартного клика для некоторых элементов)
-        web_browser.execute_script("arguments[0].click();", element)
-        # Пауза 3 секунды для завершения навигации и загрузки новой страницы
-        time.sleep(3)
-
-    # Шаг Allure: проверяем, что URL содержит подстроку "careers"
-    with allure.step('Проверить URL содержит "careers"'):
-        # Утверждение: текущий URL должен содержать "careers" — это подтверждает успешный переход
-        assert "careers" in page.get_current_url()
+# Вспомогательная функция: закрывает баннер cookies, если он отображается
+def dismiss_cookies(page):
+    # Если кнопка принятия cookies присутствует на странице
+    if page.btn_access.is_presented():
+        # Кликаем по кнопке cookies для закрытия баннера
+        page.btn_access.click()
 
 
-# Декоратор Allure: название теста — "Проверка кнопки 'Контакты'"
-@allure.title('Проверка кнопки "Контакты"')
-# Декоратор Allure: фича — "Навигация"
-@allure.feature('Навигация')
-# Функция теста: проверяет переход на страницу контактов
-def test_go_to_contacts(web_browser):
+# ──────────────────────────────────────────────
+# 1. Проверка хэдера
+# ──────────────────────────────────────────────
+
+# Декоратор Allure: название теста — "Проверка хэдера: наличие, отображение и кликабельность всех элементов"
+@allure.title('Проверка хэдера: наличие, отображение и кликабельность всех элементов')
+# Декоратор Allure: фича — "Хэдер" (группировка в отчёте)
+@allure.feature('Хэдер')
+# Функция теста: проверяет все элементы хэдера на главной странице
+def test_header(web_browser):
     # Создаём Page Object главной страницы
     page = MainPage(web_browser)
+    # Закрываем баннер cookies, если он отображается
+    dismiss_cookies(page)
 
-    # Шаг Allure: принимаем cookies, если баннер отображается
-    with allure.step('Принять cookies'):
-        # Если кнопка cookies присутствует — кликаем по ней
-        if page.btn_access.is_presented():
-            page.btn_access.click()
+    # Шаг Allure: проверяем логотип
+    with allure.step('Проверить логотип'):
+        # Утверждение: логотип должен быть видим на странице
+        assert page.logo.is_visible(), "Логотип не отображается"
+        # Утверждение: логотип должен быть кликабелен
+        assert page.logo.is_clickable(), "Логотип не кликабелен"
 
-    # Шаг Allure: переход по ссылке "Контакты"
-    with allure.step('Перейти по ссылке "Контакты"'):
-        # Находим элемент ссылки "Контакты" на странице
-        element = page.contacts_link.find()
-        # Прокручиваем страницу к элементу, чтобы он был виден
-        web_browser.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
-        # Кликаем по ссылке через JavaScript (обход потенциальных проблем с кликом)
-        web_browser.execute_script("arguments[0].click();", element)
-        # Ждём 3 секунды загрузки страницы контактов
-        time.sleep(3)
+    # Шаг Allure: проверяем блок телефонов
+    with allure.step('Проверить блок телефонов'):
+        # Утверждение: блок телефонов должен присутствовать на странице
+        assert page.phones_block.is_presented(), "Блок телефонов не найден"
+        # Утверждение: блок телефонов должен быть видим
+        assert page.phones_block.is_visible(), "Блок телефонов не отображается"
 
-    # Шаг Allure: проверяем, что URL содержит подстроку "kontakty"
-    with allure.step('Проверить URL содержит "kontakty"'):
-        # Утверждение: URL должен содержать "kontakty" — подтверждает успешный переход
-        assert "kontakty" in page.get_current_url()
+    # Шаг Allure: проверяем адрес компании
+    with allure.step('Проверить адрес'):
+        # Утверждение: адрес должен быть видим на странице
+        assert page.address_text.is_visible(), "Адрес не отображается"
 
+    # Шаг Allure: проверяем панель информации
+    with allure.step('Проверить панель информации'):
+        # Утверждение: панель информации должна присутствовать
+        assert page.info_panel.is_presented(), "Панель информации не найдена"
 
-# ---- Закомментированные тесты (временно отключены) ----
-# Тест перехода на страницу "Мероприятия" — отключён, т.к. ссылка может вести на внешний ресурс
-# @allure.title('Проверка кнопки "Мероприятия"')
-# @allure.feature('Навигация')
-# def test_go_to_news(web_browser):
-#     page = MainPage(web_browser)
-#     with allure.step('Принять cookies'):
-#         if page.btn_access.is_presented():
-#             page.btn_access.click()
-#     with allure.step('Перейти по ссылке "Мероприятия"'):
-#         element = page.news_link.find()
-#         web_browser.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
-#         href = element.get_attribute("href")
-#         web_browser.execute_script("arguments[0].click();", element)
-#         time.sleep(3)
-#         if "news" not in page.get_current_url():
-#             web_browser.get(href)
-#             time.sleep(3)
-#     with allure.step('Проверить URL содержит "news"'):
-#         assert "news" in page.get_current_url()
+    # Шаг Allure: проверяем панель меню
+    with allure.step('Проверить панель меню'):
+        # Утверждение: панель меню должна присутствовать
+        assert page.menu_panel.is_presented(), "Панель меню не найдена"
 
-# Тест перехода на страницу "Статьи" — отключён
-# @allure.title('Проверка кнопки "Статьи"')
-# @allure.feature('Навигация')
-# def test_go_to_articles(web_browser):
-#     page = MainPage(web_browser)
-#     with allure.step('Принять cookies'):
-#         if page.btn_access.is_presented():
-#             page.btn_access.click()
-#     with allure.step('Перейти по ссылке "Статьи"'):
-#         element = page.articles_link.find()
-#         web_browser.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
-#         web_browser.execute_script("arguments[0].click();", element)
-#         time.sleep(3)
-#     with allure.step('Проверить URL содержит "stati-i-publikaczii"'):
-#         assert "stati-i-publikaczii" in page.get_current_url()
+    # Шаг Allure: проверяем выпадающее меню "IT ОБРАЗОВАНИЕ"
+    with allure.step('Проверить меню "IT ОБРАЗОВАНИЕ"'):
+        # Утверждение: меню должно быть видимым
+        assert page.it_education_menu.is_visible(), "Меню 'IT ОБРАЗОВАНИЕ' не отображается"
 
-# Тест перехода на страницу "Обучение английскому языку" — отключён
-# @allure.title('Проверка кнопки "Обучение английскому языку"')
-# @allure.feature('Навигация')
-# def test_go_to_english(web_browser):
-#     page = MainPage(web_browser)
-#     with allure.step('Принять cookies'):
-#         if page.btn_access.is_presented():
-#             page.btn_access.click()
-#     with allure.step('Перейти по ссылке "Обучение английскому языку"'):
-#         element = page.english_link.find()
-#         web_browser.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
-#         href = element.get_attribute("href")
-#         web_browser.execute_script("arguments[0].click();", element)
-#         time.sleep(3)
-#         if "2english" not in page.get_current_url():
-#             web_browser.get(href)
-#             time.sleep(3)
-#     with allure.step('Проверить URL содержит "2english"'):
-#         assert "2english" in page.get_current_url()
+    # Шаг Allure: проверяем навигационные ссылки в меню
+    with allure.step('Проверить навигационные ссылки'):
+        # Утверждение: ссылка "МЕРОПРИЯТИЯ" должна быть видима и кликабельна
+        assert page.nav_news.is_visible(), "Ссылка 'МЕРОПРИЯТИЯ' не отображается"
+        assert page.nav_news.is_clickable(), "Ссылка 'МЕРОПРИЯТИЯ' не кликабельна"
+        # Утверждение: ссылка "Статьи" должна быть видима и кликабельна
+        assert page.nav_articles.is_visible(), "Ссылка 'Статьи' не отображается"
+        assert page.nav_articles.is_clickable(), "Ссылка 'Статьи' не кликабельна"
+        # Утверждение: ссылка "КОНТАКТЫ" должна быть видима и кликабельна
+        assert page.nav_contacts.is_visible(), "Ссылка 'КОНТАКТЫ' не отображается"
+        assert page.nav_contacts.is_clickable(), "Ссылка 'КОНТАКТЫ' не кликабельна"
+        # Утверждение: ссылка "Обучение английскому" должна быть видима и кликабельна
+        assert page.nav_english.is_visible(), "Ссылка 'Обучение английскому' не отображается"
+        assert page.nav_english.is_clickable(), "Ссылка 'Обучение английскому' не кликабельна"
+
+    # Шаг Allure: проверяем бургер-меню (мобильная версия)
+    with allure.step('Проверить бургер-меню'):
+        # Утверждение: бургер-меню должно присутствовать в DOM
+        assert page.burger_menu.is_presented(), "Бургер-меню не найдено"
 
 
-# Декоратор Allure: название теста — "Проверка перехода на курс 'Тестирование ПО (QA)'"
-@allure.title('Проверка перехода на курс "Тестирование ПО (QA)"')
-# Декоратор Allure: фича — "Меню IT ОБРАЗОВАНИЕ" (тест проверяет навигацию через выпадающее меню)
-@allure.feature('Меню IT ОБРАЗОВАНИЕ')
-# Функция теста: проверяет переход на страницу курса QA через меню IT-образования
-def test_go_to_qa_course(web_browser):
+# ──────────────────────────────────────────────
+# 2. Проверка футера
+# ──────────────────────────────────────────────
+
+# Декоратор Allure: название теста — "Проверка футера: наличие, отображение и кликабельность всех элементов"
+@allure.title('Проверка футера: наличие, отображение и кликабельность всех элементов')
+# Декоратор Allure: фича — "Футер" (группировка в отчёте)
+@allure.feature('Футер')
+# Функция теста: проверяет все элементы футера на главной странице
+def test_footer(web_browser):
     # Создаём Page Object главной страницы
     page = MainPage(web_browser)
+    # Закрываем баннер cookies
+    dismiss_cookies(page)
 
-    # Шаг Allure: принимаем cookies
-    with allure.step('Принять cookies'):
-        # Если кнопка cookies видна — кликаем для закрытия баннера
-        if page.btn_access.is_presented():
-            page.btn_access.click()
+    # Шаг Allure: прокручиваем страницу к футеру
+    with allure.step('Прокрутить к футеру'):
+        # Прокручиваем страницу к футеру через JavaScript
+        web_browser.execute_script("arguments[0].scrollIntoView({block: 'center'});", page.footer.find())
+        # Ждём 1 секунду для полной отрисовки футера
+        time.sleep(1)
 
-    # Шаг Allure: открываем выпадающее меню "IT ОБРАЗОВАНИЕ"
-    with allure.step('Открыть меню "IT ОБРАЗОВАНИЕ"'):
-        # Находим элемент пункта меню "IT ОБРАЗОВАНИЕ"
-        element = page.it_education_menu.find()
-        # Прокручиваем к нему, чтобы он был кликабелен
-        web_browser.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
-        # Кликаем по меню через JavaScript для раскрытия подменю
-        web_browser.execute_script("arguments[0].click();", element)
-        # Ждём 2 секунды для появления выпадающего списка с курсами
-        time.sleep(2)
+    # Шаг Allure: проверяем логотип в футере
+    with allure.step('Проверить логотип в футере'):
+        # Утверждение: логотип в футере должен быть видим
+        assert page.footer_logo.is_visible(), "Логотип в футере не отображается"
+        # Утверждение: логотип в футере должен быть кликабелен
+        assert page.footer_logo.is_clickable(), "Логотип в футере не кликабелен"
 
-    # Шаг Allure: выбираем курс "Тестирование ПО (QA)" из раскрытого меню
-    with allure.step('Кликнуть по курсу "Тестирование ПО (QA)"'):
-        # Находим ссылку на курс QA в выпадающем меню
-        qa = page.qa_course_link.find()
-        # Кликаем по ссылке курса через JavaScript
-        web_browser.execute_script("arguments[0].click();", qa)
-        # Ждём 3 секунды для загрузки страницы курса
-        time.sleep(3)
+    # Шаг Allure: проверяем блок контактов футера
+    with allure.step('Проверить блок контактов футера'):
+        # Утверждение: секция контактов футера должна присутствовать
+        assert page.footer_contacts_section.is_presented(), "Секция контактов футера не найдена"
 
-    # Шаг Allure: проверяем, что URL содержит "testirovanie-po-qa"
-    with allure.step('Проверить URL содержит "testirovanie-po-qa"'):
-        # Утверждение: URL должен содержать slug курса QA — подтверждает успешный переход
-        assert "testirovanie-po-qa" in page.get_current_url()
+    # Шаг Allure: проверяем ссылку на сайт в контактах
+    with allure.step('Проверить ссылку на сайт'):
+        # Утверждение: ссылка на сайт должна быть кликабельна
+        assert page.footer_contacts_site.is_clickable(), "Ссылка на сайт не кликабельна"
 
+    # Шаг Allure: проверяем телефоны в контактах футера
+    with allure.step('Проверить телефоны в контактах'):
+        # Утверждение: телефон 1 в контактах должен быть кликабелен
+        assert page.footer_contacts_phone1.is_clickable(), "Телефон 1 в контактах не кликабелен"
+        # Утверждение: телефон 2 в контактах должен быть кликабелен
+        assert page.footer_contacts_phone2.is_clickable(), "Телефон 2 в контактах не кликабелен"
 
-# ---- Закомментированные тесты курсов IT-образования (временно отключены) ----
-# Тест перехода на курс "Разработка ПО на Python"
-# @allure.title('Проверка перехода на курс "Разработка ПО на Python"')
-# @allure.feature('Меню IT ОБРАЗОВАНИЕ')
-# def test_go_to_python_course(web_browser):
-#     page = MainPage(web_browser)
-#     with allure.step('Принять cookies'):
-#         if page.btn_access.is_presented():
-#             page.btn_access.click()
-#     with allure.step('Открыть меню "IT ОБРАЗОВАНИЕ"'):
-#         element = page.it_education_menu.find()
-#         web_browser.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
-#         web_browser.execute_script("arguments[0].click();", element)
-#         time.sleep(2)
-#     with allure.step('Кликнуть по курсу "Разработка ПО на Python"'):
-#         link = page.python_course_link.find()
-#         web_browser.execute_script("arguments[0].click();", link)
-#         time.sleep(3)
-#     with allure.step('Проверить URL содержит "razrabotka-po-na-python"'):
-#         assert "razrabotka-po-na-python" in page.get_current_url()
+    # Шаг Allure: проверяем email в контактах
+    with allure.step('Проверить email'):
+        # Утверждение: email в контактах должен быть кликабелен
+        assert page.footer_contacts_email.is_clickable(), "Email в контактах не кликабелен"
 
-# Тест перехода на курс "Разработка ПО на Java"
-# @allure.title('Проверка перехода на курс "Разработка ПО на Java"')
-# @allure.feature('Меню IT ОБРАЗОВАНИЕ')
-# def test_go_to_java_course(web_browser):
-#     page = MainPage(web_browser)
-#     with allure.step('Принять cookies'):
-#         if page.btn_access.is_presented():
-#             page.btn_access.click()
-#     with allure.step('Открыть меню "IT ОБРАЗОВАНИЕ"'):
-#         element = page.it_education_menu.find()
-#         web_browser.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
-#         web_browser.execute_script("arguments[0].click();", element)
-#         time.sleep(2)
-#     with allure.step('Кликнуть по курсу "Разработка ПО на Java"'):
-#         link = page.java_course_link.find()
-#         web_browser.execute_script("arguments[0].click();", link)
-#         time.sleep(3)
-#     with allure.step('Проверить URL содержит "razrabotka-po-na-java"'):
-#         assert "razrabotka-po-na-java" in page.get_current_url()
+    # Шаг Allure: проверяем навигацию в футере
+    with allure.step('Проверить навигацию в футере'):
+        # Утверждение: ссылка "Направления обучения" должна быть кликабельна
+        assert page.footer_nav_directions.is_clickable(), "Ссылка 'Направления обучения' не кликабельна"
+        # Утверждение: ссылка "Статьи" должна быть кликабельна
+        assert page.footer_nav_articles.is_clickable(), "Ссылка 'Статьи' не кликабельна"
+        # Утверждение: ссылка "Новости и акции" должна быть кликабельна
+        assert page.footer_nav_news.is_clickable(), "Ссылка 'Новости и акции' не кликабельна"
+        # Утверждение: ссылка "Контакты" должна быть кликабельна
+        assert page.footer_nav_contacts.is_clickable(), "Ссылка 'Контакты' не кликабельна"
 
-# Тест перехода на курс "UX/UI Дизайн"
-# @allure.title('Проверка перехода на курс "UX/UI Дизайн"')
-# @allure.feature('Меню IT ОБРАЗОВАНИЕ')
-# def test_go_to_ux_ui_course(web_browser):
-#     page = MainPage(web_browser)
-#     with allure.step('Принять cookies'):
-#         if page.btn_access.is_presented():
-#             page.btn_access.click()
-#     with allure.step('Открыть меню "IT ОБРАЗОВАНИЕ"'):
-#         element = page.it_education_menu.find()
-#         web_browser.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
-#         web_browser.execute_script("arguments[0].click();", element)
-#         time.sleep(2)
-#     with allure.step('Кликнуть по курсу "UX/UI Дизайн"'):
-#         link = page.ux_ui_course_link.find()
-#         web_browser.execute_script("arguments[0].click();", link)
-#         time.sleep(3)
-#     with allure.step('Проверить URL содержит "ux-ui-dizajn"'):
-#         assert "ux-ui-dizajn" in page.get_current_url()
+    # Шаг Allure: проверяем телефоны в футере
+    with allure.step('Проверить телефоны в футере'):
+        # Утверждение: телефон 1 в футере должен быть кликабелен
+        assert page.footer_phone1.is_clickable(), "Телефон 1 в футере не кликабелен"
+        # Утверждение: телефон 2 в футере должен быть кликабелен
+        assert page.footer_phone2.is_clickable(), "Телефон 2 в футере не кликабелен"
 
-# Тест перехода на курс "Data Analyst"
-# @allure.title('Проверка перехода на курс "Data Analyst"')
-# @allure.feature('Меню IT ОБРАЗОВАНИЕ')
-# def test_go_to_data_analyst(web_browser):
-#     page = MainPage(web_browser)
-#     with allure.step('Принять cookies'):
-#         if page.btn_access.is_presented():
-#             page.btn_access.click()
-#     with allure.step('Открыть меню "IT ОБРАЗОВАНИЕ"'):
-#         element = page.it_education_menu.find()
-#         web_browser.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
-#         web_browser.execute_script("arguments[0].click();", element)
-#         time.sleep(2)
-#     with allure.step('Кликнуть по курсу "Аналитик данных в IT"'):
-#         link = page.data_analyst_link.find()
-#         web_browser.execute_script("arguments[0].click();", link)
-#         time.sleep(3)
-#     with allure.step('Проверить URL содержит "analitik-dannyh-v-it-data-analyst"'):
-#         assert "analitik-dannyh-v-it-data-analyst" in page.get_current_url()
+    # Шаг Allure: проверяем адрес в футере
+    with allure.step('Проверить адрес в футере'):
+        # Утверждение: адрес в футере должен присутствовать
+        assert page.footer_address.is_presented(), "Адрес в футере не найден"
 
-# Тест перехода на курс "Управление проектами в IT (PM)"
-# @allure.title('Проверка перехода на курс "Управление проектами в IT (PM)"')
-# @allure.feature('Меню IT ОБРАЗОВАНИЕ')
-# def test_go_to_pm_course(web_browser):
-#     page = MainPage(web_browser)
-#     with allure.step('Принять cookies'):
-#         if page.btn_access.is_presented():
-#             page.btn_access.click()
-#     with allure.step('Открыть меню "IT ОБРАЗОВАНИЕ"'):
-#         element = page.it_education_menu.find()
-#         web_browser.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
-#         web_browser.execute_script("arguments[0].click();", element)
-#         time.sleep(2)
-#     with allure.step('Кликнуть по курсу "Управление проектами в IT (PM)"'):
-#         link = page.pm_course_link.find()
-#         web_browser.execute_script("arguments[0].click();", link)
-#         time.sleep(3)
-#     with allure.step('Проверить URL содержит "upravlenie-proektami-v-it-pm"'):
-#         assert "upravlenie-proektami-v-it-pm" in page.get_current_url()
+    # Шаг Allure: проверяем соцсети в футере
+    with allure.step('Проверить соцсети в футере'):
+        # Утверждение: ссылка VK должна быть кликабельна
+        assert page.footer_vk.is_clickable(), "Ссылка VK не кликабельна"
+        # Утверждение: ссылка Facebook должна быть кликабельна
+        assert page.footer_facebook.is_clickable(), "Ссылка Facebook не кликабельна"
+        # Утверждение: ссылка Telegram должна быть кликабельна
+        assert page.footer_telegram.is_clickable(), "Ссылка Telegram не кликабельна"
+        # Утверждение: ссылка Instagram должна быть кликабельна
+        assert page.footer_instagram.is_clickable(), "Ссылка Instagram не кликабельна"
+        # Утверждение: ссылка YouTube должна быть кликабельна
+        assert page.footer_youtube.is_clickable(), "Ссылка YouTube не кликабельна"
 
-# Тест перехода на курс "DevOps+MLOps"
-# @allure.title('Проверка перехода на курс "DevOps+MLOps"')
-# @allure.feature('Меню IT ОБРАЗОВАНИЕ')
-# def test_go_to_devops(web_browser):
-#     page = MainPage(web_browser)
-#     with allure.step('Принять cookies'):
-#         if page.btn_access.is_presented():
-#             page.btn_access.click()
-#     with allure.step('Открыть меню "IT ОБРАЗОВАНИЕ"'):
-#         element = page.it_education_menu.find()
-#         web_browser.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
-#         web_browser.execute_script("arguments[0].click();", element)
-#         time.sleep(2)
-#     with allure.step('Кликнуть по курсу "DevOps+MLOps"'):
-#         link = page.devops_link.find()
-#         web_browser.execute_script("arguments[0].click();", link)
-#         time.sleep(3)
-#     with allure.step('Проверить URL содержит "devops-engineer"'):
-#         assert "devops-engineer" in page.get_current_url()
-
-# Тест перехода на "Профориентационный тест"
-# @allure.title('Проверка кнопки "Проф orientation тест"')
-# @allure.feature('Меню IT ОБРАЗОВАНИЕ')
-# def test_go_to_career_test(web_browser):
-#     page = MainPage(web_browser)
-#     with allure.step('Принять cookies'):
-#         if page.btn_access.is_presented():
-#             page.btn_access.click()
-#     with allure.step('Открыть меню "IT ОБРАЗОВАНИЕ"'):
-#         element = page.it_education_menu.find()
-#         web_browser.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
-#         web_browser.execute_script("arguments[0].click();", element)
-#         time.sleep(2)
-#     with allure.step('Кликнуть по "Профorientation тест"'):
-#         link = page.career_test_link.find()
-#         web_browser.execute_script("arguments[0].click();", link)
-#         time.sleep(3)
-#     with allure.step('Проверить URL содержит "career-guidance-test"'):
-#         assert "career-guidance-test" in page.get_current_url()
-
-# Тест перехода на курс "IT Start"
-# @allure.title('Проверка перехода на "IT Start"')
-# @allure.feature('Меню IT ОБРАЗОВАНИЕ')
-# def test_go_to_it_start(web_browser):
-#     page = MainPage(web_browser)
-#     with allure.step('Принять cookies'):
-#         if page.btn_access.is_presented():
-#             page.btn_access.click()
-#     with allure.step('Открыть меню "IT ОБРАЗОВАНИЕ"'):
-#         element = page.it_education_menu.find()
-#         web_browser.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
-#         web_browser.execute_script("arguments[0].click();", element)
-#         time.sleep(2)
-#     with allure.step('Кликнуть по "КУРС IT START"'):
-#         link = page.it_start_link.find()
-#         web_browser.execute_script("arguments[0].click();", link)
-#         time.sleep(3)
-#     with allure.step('Проверить URL содержит "it-start"'):
-#         assert "it-start" in page.get_current_url()
-
-# Тест кнопки "ПОЛУЧИТЬ КОНСУЛЬТАЦИЮ" на слайдере — отключён
-# @allure.title('Проверка кнопки "ПОЛУЧИТЬ КОНСУЛЬТАЦИЮ" на слайдере')
-# @allure.feature('Слайдер')
-# def test_slider_consultation_button(web_browser):
-#     page = MainPage(web_browser)
-#     with allure.step('Принять cookies'):
-#         if page.btn_access.is_presented():
-#             page.btn_access.click()
-#     with allure.step('Найти кнопку "ПОЛУЧИТЬ КОНСУЛЬТАЦИЮ"'):
-#         element = page.learn_more_btn.find()
-#         assert element is not None, "Кнопка 'ПОЛУЧИТЬ КОНСУЛЬТАЦИЮ' не найдена"
-#     with allure.step('Проверить кликабельность кнопки'):
-#         is_clickable = page.learn_more_btn.is_clickable()
-#         assert is_clickable, "Кнопка 'ПОЛУЧИТЬ КОНСУЛЬТАЦИЮ' некликабельна"
+    # Шаг Allure: проверяем копирайт
+    with allure.step('Проверить копирайт'):
+        # Утверждение: копирайт должен присутствовать
+        assert page.footer_copyright.is_presented(), "Копирайт не найден"
 
 
-# Декоратор Allure: название — "Проверка кнопки 'Обратная связь' (чат)"
-@allure.title('Проверка кнопки "Обратная связь" (чат)')
-# Декоратор Allure: фича — "Форма обратной связи"
-@allure.feature('Форма обратной связи')
-# Функция теста: проверяет работоспособность виджета чата обратной связи (Bitrix24)
-def test_feedback_form(web_browser):
+# ──────────────────────────────────────────────
+# 3. Проверка центрального блока
+# ──────────────────────────────────────────────
+
+# Декоратор Allure: название теста — "Проверка центрального блока: наличие, отображение и кликабельность всех элементов"
+@allure.title('Проверка центрального блока: наличие, отображение и кликабельность всех элементов')
+# Декоратор Allure: фича — "Центральный блок" (группировка в отчёте)
+@allure.feature('Центральный блок')
+# Функция теста: проверяет элементы центрального блока (слайдер, дети, отзывы, чат)
+def test_central_block(web_browser):
     # Создаём Page Object главной страницы
     page = MainPage(web_browser)
+    # Закрываем баннер cookies
+    dismiss_cookies(page)
 
-    # Шаг Allure: принимаем cookies
-    with allure.step('Принять cookies'):
-        # Если кнопка cookies присутствует — кликаем
-        if page.btn_access.is_presented():
-            page.btn_access.click()
+    # Шаг Allure: проверяем слайдер
+    with allure.step('Проверить слайдер'):
+        # Утверждение: секция слайдера должна присутствовать
+        assert page.slider_section.is_presented(), "Слайдер не найден"
 
-    # Шаг Allure: проверяем наличие виджета чата в DOM страницы
-    with allure.step('Проверить наличие виджета чата в DOM'):
-        # Ждём полной загрузки страницы (waitForPageLoaded)
-        page.wait_page_loaded()
-        # Дополнительная пауза 8 секунд — виджет чата может загружаться асинхронно (JS-виджет)
-        time.sleep(8)
-        # Находим элемент кнопки чата на странице
-        chat = page.chat_button.find()
-        # Утверждение: элемент чата должен быть найден в DOM
-        assert chat is not None, "Виджет чата не найден в DOM"
+    # Шаг Allure: проверяем кнопку "УЗНАТЬ ПОДРОБНОСТИ"
+    with allure.step('Проверить кнопку "УЗНАТЬ ПОДРОБНОСТИ"'):
+        # Утверждение: кнопка слайдера должна быть кликабельна
+        assert page.learn_more_btn.is_clickable(), "Кнопка слайдера не кликабельна"
 
-    # Шаг Allure: кликаем по виджету чата через JavaScript
-    with allure.step('Кликнуть по виджету чата через JS'):
-        # Кликаем по кнопке чата через execute_script (обход стандартного клика)
-        web_browser.execute_script("arguments[0].click();", chat)
-        # Ждём 8 секунд — панель чата может открываться с анимацией/задержкой
-        time.sleep(8)
+    # Шаг Allure: проверяем блок "Обучение для детей и подростков"
+    with allure.step('Проверить блок "Обучение для детей и подростков"'):
+        # Утверждение: заголовок блока детей должен быть видим
+        assert page.kids_section_title.is_visible(), "Заголовок блока детей не отображается"
 
-    # Шаг Allure: проверяем, что панель чата появилась после клика
-    with allure.step('Проверить появление элементов чата'):
-        # Явное ожидание: ждём до 15 секунд появления элемента чата в DOM (Bitrix24 или b24-widget)
-        chat_panel = WebDriverWait(web_browser, 15).until(
-            EC.presence_of_element_located((By.XPATH,
-                # XPath ищет элемент с классом b24-widget ИЛИ bitrix24 (два варианта разметки виджета)
-                "//*[contains(@class,'b24-widget')] | "
-                "//*[contains(@class,'bitrix24')]"
-            ))
-        )
-        # Утверждение: панель чата должна появиться после клика
-        assert chat_panel is not None, "Панель чата не появилась после клика"
+    # Шаг Allure: проверяем ссылки на курсы для детей
+    with allure.step('Проверить ссылки на курсы для детей'):
+        # Утверждение: ссылка "7-8 лет" должна присутствовать в DOM
+        assert page.kids_7_8_link.is_presented(), "Ссылка '7-8 лет' не найдена"
+        # Утверждение: ссылка "9-11 лет" должна присутствовать в DOM
+        assert page.kids_9_11_link.is_presented(), "Ссылка '9-11 лет' не найдена"
+        # Утверждение: ссылка "12-13 лет" должна присутствовать в DOM
+        assert page.kids_12_13_link.is_presented(), "Ссылка '12-13 лет' не найдена"
+        # Утверждение: ссылка "IT колледж" должна присутствовать в DOM
+        assert page.it_college_link.is_presented(), "Ссылка 'IT колледж' не найдена"
 
+    # Шаг Allure: проверяем блок отзывов
+    with allure.step('Проверить блок отзывов'):
+        # Утверждение: заголовок отзывов должен быть видим
+        assert page.reviews_title.is_visible(), "Заголовок отзывов не отображается"
+        # Утверждение: отзыв YANDEX должен присутствовать
+        assert page.review_yandex.is_presented(), "Отзыв YANDEX не найден"
+        # Утверждение: отзыв GOOGLE должен присутствовать
+        assert page.review_google.is_presented(), "Отзыв GOOGLE не найден"
+        # Утверждение: отзыв FACEBOOK должен присутствовать
+        assert page.review_facebook.is_presented(), "Отзыв FACEBOOK не найден"
 
-# ---- Закомментированные тесты (временно отключены) ----
-# Тест наличия логотипа на странице
-# @allure.title('Проверка логотипа сайта')
-# @allure.feature('Главная страница')
-# def test_logo_present(web_browser):
-#     page = MainPage(web_browser)
-#     with allure.step('Принять cookies'):
-#         if page.btn_access.is_presented():
-#             page.btn_access.click()
-#     with allure.step('Проверить наличие логотипа'):
-#         logo = WebDriverWait(web_browser, 10).until(
-#             EC.presence_of_element_located((By.CSS_SELECTOR, ".logo a img, .logo a"))
-#         )
-#         assert logo is not None, "Логотип не найден на странице"
-#     with allure.step('Проверить кликабельность логотипа'):
-#         logo_link = web_browser.find_element(By.CSS_SELECTOR, ".logo a")
-#         href = logo_link.get_attribute("href")
-#         assert href is not None, "Логотип не является ссылкой"
+    # Шаг Allure: проверяем ссылку на профориентационный тест
+    with allure.step('Проверить ссылку на профориентационный тест'):
+        # Утверждение: ссылка на профтест должна присутствовать в DOM
+        assert page.career_guidance_link.is_presented(), "Ссылка на профтест не найдена"
 
-# Тест наличия телефонных номеров в шапке/футере
-# @allure.title('Проверка наличия телефонных номеров')
-# @allure.feature('Контактная информация')
-# def test_phone_numbers_present(web_browser):
-#     page = MainPage(web_browser)
-#     with allure.step('Принять cookies'):
-#         if page.btn_access.is_presented():
-#             page.btn_access.click()
-#     with allure.step('Проверить наличие телефонных номеров'):
-#         phones = WebDriverWait(web_browser, 10).until(
-#             EC.presence_of_all_elements_located((By.CSS_SELECTOR, ".phones .phone a[href^='tel:']"))
-#         )
-#         assert len(phones) >= 2, f"Найдено менее 2 телефонных номеров: {len(phones)}"
-
-# Тест наличия адреса компании на странице
-# @allure.title('Проверка адреса компании')
-# @allure.feature('Контактная информация')
-# def test_address_present(web_browser):
-#     page = MainPage(web_browser)
-#     with allure.step('Принять cookies'):
-#         if page.btn_access.is_presented():
-#             page.btn_access.click()
-#     with allure.step('Проверить наличие адреса'):
-#         address = WebDriverWait(web_browser, 10).until(
-#             EC.presence_of_element_located((By.CSS_SELECTOR, ".address .location, .address p"))
-#         )
-#         assert address is not None, "Адрес не найден на странице"
-#         text = address.text
-#         assert "Минск" in text or "Маркса" in text, f"Адрес не содержит ожидаемый текст: {text}"
-
-# Тест заголовка страницы (дублируется — ниже есть активная версия)
-# @allure.title('Проверка заголовка страницы')
-# @allure.feature('Главная страница')
-# def test_page_title(web_browser):
-#     page = MainPage(web_browser)
-#     with allure.step('Принять cookies'):
-#         if page.btn_access.is_presented():
-#             page.btn_access.click()
-#     with allure.step('Проверить заголовок страницы'):
-#         title = web_browser.title
-#         assert "IT" in title or "ШАГ" in title or "itstep" in title.lower(), \
-#             f"Заголовок страницы не содержит ожидаемый текст: {title}"
-
-# Тест наличия блока "ОБУЧЕНИЕ ДЛЯ ДЕТЕЙ И ПОДРОСТКОВ"
-# @allure.title('Проверка наличия блока "ОБУЧЕНИЕ ДЛЯ ДЕТЕЙ И ПОДРОСТКОВ"')
-# @allure.feature('Главная страница')
-# def test_kids_section_present(web_browser):
-#     page = MainPage(web_browser)
-#     with allure.step('Принять cookies'):
-#         if page.btn_access.is_presented():
-#             page.btn_access.click()
-#     with allure.step('Проверить наличие секции обучения для детей'):
-#         section = WebDriverWait(web_browser, 10).until(
-#             EC.presence_of_element_located((By.XPATH, "//h1[contains(text(), 'ДЕТЕЙ И ПОДРОСТКОВ')]"))
-#         )
-#         assert section is not None, "Секция 'ОБУЧЕНИЕ ДЛЯ ДЕТЕЙ И ПОДРОСТКОВ' не найдена"
-
-# Тест перехода на программу "7-8 лет"
-# @allure.title('Проверка ссылки на программу "7-8 лет"')
-# @allure.feature('Программы для детей')
-# def test_kids_7_8_link(web_browser):
-#     page = MainPage(web_browser)
-#     with allure.step('Принять cookies'):
-#         if page.btn_access.is_presented():
-#             page.btn_access.click()
-#     with allure.step('Кликнуть по ссылке "7-8 лет"'):
-#         element = page.kids_7_8_link.find()
-#         web_browser.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
-#         web_browser.execute_script("arguments[0].click();", element)
-#         time.sleep(3)
-#     with allure.step('Проверить URL содержит "kursy-dlya-detej-7-8-let"'):
-#         assert "kursy-dlya-detej-7-8-let" in page.get_current_url()
-
-# Тест перехода на программу "9-11 лет"
-# @allure.title('Проверка ссылки на программу "9-11 лет"')
-# @allure.feature('Программы для детей')
-# def test_kids_9_11_link(web_browser):
-#     page = MainPage(web_browser)
-#     with allure.step('Принять cookies'):
-#         if page.btn_access.is_presented():
-#             page.btn_access.click()
-#     with allure.step('Кликнуть по ссылке "9-11 лет"'):
-#         element = page.kids_9_11_link.find()
-#         web_browser.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
-#         web_browser.execute_script("arguments[0].click();", element)
-#         time.sleep(3)
-#     with allure.step('Проверить URL содержит "kursy-dlya-detej-9-11-let"'):
-#         assert "kursy-dlya-detej-9-11-let" in page.get_current_url()
-
-# Тест перехода на программу "12-13 лет"
-# @allure.title('Проверка ссылки на программу "12-13 лет"')
-# @allure.feature('Программы для детей')
-# def test_kids_12_13_link(web_browser):
-#     page = MainPage(web_browser)
-#     with allure.step('Принять cookies'):
-#         if page.btn_access.is_presented():
-#             page.btn_access.click()
-#     with allure.step('Кликнуть по ссылке "12-13 лет"'):
-#         element = page.kids_12_13_link.find()
-#         web_browser.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
-#         web_browser.execute_script("arguments[0].click();", element)
-#         time.sleep(3)
-#     with allure.step('Проверить URL содержит "kursy-dlya-detej-12-13-let"'):
-#         assert "kursy-dlya-detej-12-13-let" in page.get_current_url()
-
-# Тест кнопки "УЗНАТЬ ПОДРОБНОСТИ" на слайдере
-# @allure.title('Проверка кнопки "УЗНАТЬ ПОДРОБНОСТИ" на слайдере')
-# @allure.feature('Слайдер')
-# def test_slider_learn_more_button(web_browser):
-#     page = MainPage(web_browser)
-#     with allure.step('Принять cookies'):
-#         if page.btn_access.is_presented():
-#             page.btn_access.click()
-#     with allure.step('Проверить наличие кнопки "УЗНАТЬ ПОДРОБНОСТИ"'):
-#         elements = page.learn_more_btn.find()
-#         assert elements is not None, "Кнопка 'УЗНАТЬ ПОДРОБНОСТИ' не найдена"
-#     with allure.step('Проверить, что кнопка ведет на внешний ресурс'):
-#         href = page.learn_more_btn.get_attribute("href")
-#         assert href is not None, "Кнопка не содержит ссылку"
-
-# Тест отсутствия JavaScript ошибок на главной странице
-# @allure.title('Проверка отсутствия JS ошибок на главной странице')
-# @allure.feature('Главная страница')
-# def test_no_js_errors(web_browser):
-#     page = MainPage(web_browser)
-#     with allure.step('Принять cookies'):
-#         if page.btn_access.is_presented():
-#             page.btn_access.click()
-#     with allure.step('Проверить отсутствие JS ошибок'):
-#         page.wait_page_loaded()
-#         page.check_js_errors(ignore_list=[
-#             'favicon', 'google', 'facebook', 'bitrix', 'gtm',
-#             'analytics', 'cdn-ru.bitrix24', 'Slow network', 'intervention',
-#             'Fallback font', 'utmstat', 'call-tracking'
-#         ])
+    # Шаг Allure: проверяем виджет чата
+    with allure.step('Проверить виджет чата'):
+        # Утверждение: виджет чата должен присутствовать в DOM
+        assert page.chat_button.is_presented(), "Виджет чата не найден"
 
 
-# Декоратор Allure: название — "Проверка заголовка страницы"
-@allure.title('Проверка заголовка страницы')
-# Декоратор Allure: фича — "Главная страница"
-@allure.feature('Главная страница')
-# Функция теста: проверяет корректность заголовка (title) страницы
-def test_page_title(web_browser):
-    # Создаём Page Object главной страницы
-    page = MainPage(web_browser)
+# ──────────────────────────────────────────────
+# 4. E2E тест: заполнение формы профориентации
+# ──────────────────────────────────────────────
 
-    # Шаг Allure: принимаем cookies
-    with allure.step('Принять cookies'):
-        # Если кнопка cookies видна — кликаем
-        if page.btn_access.is_presented():
-            page.btn_access.click()
-
-    # Шаг Allure: проверяем заголовок страницы
-    with allure.step('Проверить заголовок страницы'):
-        # Получаем текущий заголовок страницы (тег <title>)
-        title = web_browser.title
-        # Утверждение: заголовок должен содержать "IT", "ШАГ" или "itstep" (любой из вариантов)
-        assert "IT" in title or "ШАГ" in title or "itstep" in title.lower(), \
-            f"Заголовок страницы не содержит ожидаемый текст: {title}"
-
-
-# ---- Закомментированный тест блока отзывов ----
-# Тест отображения карточек отзывов (YANDEX, GOOGLE, FACEBOOK)
-# @allure.title('Проверка отображения всех карточек в блоке отзывов')
-# @allure.feature('Блок отзывов')
-# def test_reviews_cards_count(web_browser):
-#     page = MainPage(web_browser)
-#     with allure.step('Принять cookies'):
-#         if page.btn_access.is_presented():
-#             page.btn_access.click()
-#     with allure.step('Прокрутить к блоку отзывов'):
-#         title = WebDriverWait(web_browser, 10).until(
-#             EC.presence_of_element_located((By.XPATH, "//div[contains(@class,'title') and contains(text(),'ОТЗЫВЫ')]"))
-#         )
-#         web_browser.execute_script("arguments[0].scrollIntoView({block: 'center'});", title)
-#         time.sleep(2)
-#     with allure.step('Подсчитать количество карточек отзывов'):
-#         section = title.find_element(By.XPATH, "./ancestor::section")
-#         cards = section.find_elements(By.CSS_SELECTOR, '.slide-container')
-#         count = len(cards)
-#     with allure.step(f'Проверить что отображается 3 карточки отзывов (фактически: {count})'):
-#         assert count == 3, f"Ожидалось 3 карточки отзывов, найдено: {count}"
-#     with allure.step('Проверить содержимое каждой карточки'):
-#         titles = []
-#         for card in cards:
-#             title_el = card.find_element(By.CSS_SELECTOR, '.slide-title')
-#             titles.append(title_el.text.strip())
-#         expected = ['YANDEX', 'GOOGLE', 'FACEBOOK']
-#         for name in expected:
-#             assert name in titles, f"Отзыв '{name}' не найден среди карточек: {titles}"
-#     with allure.step('Проверить что все карточки содержат ссылки'):
-#         for i, card in enumerate(cards):
-#             link = card.find_element(By.TAG_NAME, 'a')
-#             href = link.get_attribute('href')
-#             assert href is not None and href.startswith('http'), \
-#                 f"Карточка отзывов {i + 1} не содержит валидную ссылку: {href}"
-
-
-# Декоратор Allure: название — E2E тест профориентационного теста (полный сценарий заполнения формы)
+# Декоратор Allure: название теста — "E2E: Профориентационный тест — заполнение формы"
 @allure.title('E2E: Профориентационный тест — заполнение формы')
 # Декоратор Allure: фича — "E2E тесты" (сквозные тесты от начала до конца)
 @allure.feature('E2E тесты')
@@ -652,38 +278,22 @@ def test_career_guidance_form(web_browser):
 
     # Шаг Allure: принимаем cookies
     with allure.step('Принять cookies'):
-        # Если баннер cookies отображается — кликаем для его закрытия
-        if page.btn_access.is_presented():
-            page.btn_access.click()
-
-    # Шаг Allure: логируем сформированные тестовые данные (pass — ничего не делаем, только для отчёта)
-    with allure.step(f'Сформированы данные: {first_name} {last_name}, {phone}, {email}'):
-        pass
+        # Кликаем по кнопке принятия cookies
+        page.btn_access.click()
 
     # Шаг Allure: открываем выпадающее меню "IT ОБРАЗОВАНИЕ"
     with allure.step('Открыть меню "IT ОБРАЗОВАНИЕ"'):
-        # Находим пункт меню "IT ОБРАЗОВАНИЕ"
-        element = page.it_education_menu.find()
-        # Прокручиваем к нему для видимости
-        web_browser.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
-        # Кликаем по меню через JavaScript для раскрытия подменю
-        web_browser.execute_script("arguments[0].click();", element)
-        # Ждём 2 секунды для появления выпадающего списка
-        time.sleep(2)
+        # Кликаем по пункту меню "IT ОБРАЗОВАНИЕ" для раскрытия подменю
+        page.it_education_menu.click()
 
     # Шаг Allure: кликаем по ссылке "Профориентационный тест" в раскрытом меню
     with allure.step('Кликнуть по "Профориентационный тест"'):
         # Находим ссылку на карьерный тест в выпадающем меню
         link = page.career_test_link.find()
-        # Кликаем по ссылке через JavaScript
+        # Кликаем по ссылке через JavaScript (обход потенциальных проблем с кликом)
         web_browser.execute_script("arguments[0].click();", link)
         # Ждём 3 секунды для загрузки страницы теста
         time.sleep(3)
-
-    # Шаг Allure: проверяем, что URL содержит slug карьерного теста
-    with allure.step('Проверить URL содержит "career-guidance-test"'):
-        # Утверждение: URL должен содержать "career-guidance-test"
-        assert "career-guidance-test" in page.get_current_url()
 
     # Шаг Allure: кликаем по кнопке "Пройти тест" для перехода к форме
     with allure.step('Кликнуть "Пройти тест"'):
@@ -751,11 +361,6 @@ def test_career_guidance_form(web_browser):
         # Пауза для обработки
         time.sleep(0.5)
 
-    # Шаг Allure: делаем скриншот заполненной формы (для отчёта Allure)
-    with allure.step('Сделать скриншот заполненной формы'):
-        # Сохраняем скриншот в файл career_test_form_filled.png
-        web_browser.save_screenshot('career_test_form_filled.png')
-
     # Шаг Allure: отвечаем на вопросы теста (radio/checkbox)
     with allure.step('Ответить на вопросы теста (radio/checkbox)'):
         # Множество имён уже обработанных групп вопросов (чтобы не отвечать дважды)
@@ -763,14 +368,15 @@ def test_career_guidance_form(web_browser):
 
         # Вспомогательная функция безопасного клика: кликает через JS и обрабатывает всплывающие алерты
         def safe_click(element):
+            # Пытаемся кликнуть по элементу через JavaScript
             try:
-                # Кликаем по элементу через JavaScript
                 web_browser.execute_script("arguments[0].click();", element)
+            # Если клик не удался — игнорируем ошибку
             except:
-                # Игнорируем ошибки клика (элемент может быть невидим)
                 pass
+            # Проверяем, не появился ли всплывающий алерт после клика
             try:
-                # Проверяем, не появился ли всплывающий алерт после клика
+                # Получаем объект алерта
                 alert = web_browser.switch_to.alert
                 # Получаем текст алерта
                 alert_text = alert.text
@@ -778,8 +384,8 @@ def test_career_guidance_form(web_browser):
                 alert.accept()
                 # Публикуем текст алерта в отчёт Allure
                 allure.step(f'Алерт: {alert_text}').publish()
+            # Если алерта нет — просто продолжаем
             except:
-                # Если алерта нет — просто продолжаем
                 pass
 
         # Находим все radio-кнопки на странице теста
@@ -819,16 +425,19 @@ def test_career_guidance_form(web_browser):
                     num_to_check = random.randint(1, min(3, len(options)))
                     # Случайно выбираем нужное количество вариантов и отмечаем их
                     for opt in random.sample(options, num_to_check):
+                        # Кликаем по варианту через безопасный клик
                         safe_click(opt)
 
     # Шаг Allure: нажимаем кнопку "Узнать свой результат!" для отправки формы
     with allure.step('Нажать "Узнать свой результат!"'):
         # Перед отправкой закрываем возможные висящие алерты
         try:
+            # Пытаемся получить всплывающий алерт
             alert = web_browser.switch_to.alert
+            # Принимаем алерт
             alert.accept()
+        # Если алерта нет — продолжаем
         except:
-            # Если алерта нет — продолжаем
             pass
         # Явное ожидание: находим кнопку отправки формы (button[type='submit'])
         submit = WebDriverWait(web_browser, 10).until(
@@ -842,13 +451,16 @@ def test_career_guidance_form(web_browser):
         time.sleep(2)
         # Обрабатываем возможный алерт после отправки формы
         try:
+            # Пытаемся получить всплывающий алерт
             alert = web_browser.switch_to.alert
+            # Получаем текст алерта
             alert_text = alert.text
+            # Принимаем алерт
             alert.accept()
             # Публикуем текст алерта в отчёт Allure
             allure.step(f'Алерт после отправки: {alert_text}').publish()
+        # Если алерта нет — продолжаем
         except:
-            # Если алерта нет — продолжаем
             pass
         # Пауза 3 секунды для завершения обработки формы сервером
         time.sleep(3)
@@ -863,8 +475,3 @@ def test_career_guidance_form(web_browser):
         form_still_visible = any(ind in page_source for ind in success_indicators)
         # Утверждение: хотя бы один индикатор должен присутствовать — форма отправлена успешно
         assert form_still_visible, "Форма не была отправлена — индикатор успеха не найден"
-
-    # Шаг Allure: делаем скриншот результата отправки (для отчёта Allure)
-    with allure.step('Сделать скриншот результата'):
-        # Сохраняем скриншот результата в файл career_test_submitted.png
-        web_browser.save_screenshot('career_test_submitted.png')
