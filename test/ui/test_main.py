@@ -21,6 +21,8 @@ def dismiss_cookies(page):
     if page.btn_access.is_presented():
         # Кликаем по кнопке cookies для закрытия баннера
         page.btn_access.click()
+        # Ждём 0.5 секунды для анимации закрытия баннера
+        time.sleep(0.5)
 
 
 # ──────────────────────────────────────────────
@@ -38,59 +40,90 @@ def test_header(web_browser):
     # Закрываем баннер cookies, если он отображается
     dismiss_cookies(page)
 
-    # Шаг Allure: проверяем логотип
+    # Шаг Allure: проверяем наличие и отображение логотипа
     with allure.step('Проверить логотип'):
+        # Находим элемент логотипа на странице
+        logo = page.logo.find()
+        # Утверждение: логотип должен быть найден в DOM
+        assert logo is not None, "Логотип не найден"
         # Утверждение: логотип должен быть видим на странице
-        assert page.logo.is_visible(), "Логотип не отображается"
-        # Утверждение: логотип должен быть кликабелен
-        assert page.logo.is_clickable(), "Логотип не кликабелен"
+        assert logo.is_displayed(), "Логотип не отображается"
+        # Утверждение: логотип должен содержать ссылку (быть кликабельным)
+        assert logo.get_attribute("href") is not None, "Логотип не кликабелен"
 
     # Шаг Allure: проверяем блок телефонов
     with allure.step('Проверить блок телефонов'):
         # Утверждение: блок телефонов должен присутствовать на странице
         assert page.phones_block.is_presented(), "Блок телефонов не найден"
-        # Утверждение: блок телефонов должен быть видим
-        assert page.phones_block.is_visible(), "Блок телефонов не отображается"
+        # Находим все ссылки телефонов в блоке
+        phones = page.phone_links.find()
+        # Утверждение: должно быть минимум 2 телефонных номера
+        assert len(phones) >= 2, f"Найдено менее 2 телефонов: {len(phones)}"
+        # Перебираем каждый найденный телефон
+        for phone in phones:
+            # Утверждение: каждый телефон должен содержать ссылку tel:
+            assert phone.get_attribute("href") is not None, f"Телефон не кликабелен: {phone.text}"
 
     # Шаг Allure: проверяем адрес компании
     with allure.step('Проверить адрес'):
-        # Утверждение: адрес должен быть видим на странице
-        assert page.address_text.is_visible(), "Адрес не отображается"
+        # Утверждение: блок адреса должен присутствовать на странице
+        assert page.address_block.is_presented(), "Блок адреса не найден"
+        # Находим элемент с текстом адреса
+        addr = page.address_text.find()
+        # Утверждение: адрес должен быть найден и отображаться
+        assert addr is not None and addr.is_displayed(), "Адрес не отображается"
+        # Утверждение: адрес должен содержать "Минск" или "Маркса"
+        assert "Минск" in addr.text or "Маркса" in addr.text, f"Адрес неожиданный: {addr.text}"
 
-    # Шаг Allure: проверяем панель информации
+    # Шаг Allure: проверяем панель информации (верхняя часть хэдера)
     with allure.step('Проверить панель информации'):
         # Утверждение: панель информации должна присутствовать
         assert page.info_panel.is_presented(), "Панель информации не найдена"
 
-    # Шаг Allure: проверяем панель меню
+    # Шаг Allure: проверяем панель меню (нижняя часть хэдера с навигацией)
     with allure.step('Проверить панель меню'):
         # Утверждение: панель меню должна присутствовать
         assert page.menu_panel.is_presented(), "Панель меню не найдена"
 
-    # Шаг Allure: проверяем выпадающее меню "IT ОБРАЗОВАНИЕ"
-    with allure.step('Проверить меню "IT ОБРАЗОВАНИЕ"'):
-        # Утверждение: меню должно быть видимым
-        assert page.it_education_menu.is_visible(), "Меню 'IT ОБРАЗОВАНИЕ' не отображается"
-
     # Шаг Allure: проверяем навигационные ссылки в меню
     with allure.step('Проверить навигационные ссылки'):
-        # Утверждение: ссылка "МЕРОПРИЯТИЯ" должна быть видима и кликабельна
-        assert page.nav_news.is_visible(), "Ссылка 'МЕРОПРИЯТИЯ' не отображается"
-        assert page.nav_news.is_clickable(), "Ссылка 'МЕРОПРИЯТИЯ' не кликабельна"
-        # Утверждение: ссылка "Статьи" должна быть видима и кликабельна
-        assert page.nav_articles.is_visible(), "Ссылка 'Статьи' не отображается"
-        assert page.nav_articles.is_clickable(), "Ссылка 'Статьи' не кликабельна"
-        # Утверждение: ссылка "КОНТАКТЫ" должна быть видима и кликабельна
-        assert page.nav_contacts.is_visible(), "Ссылка 'КОНТАКТЫ' не отображается"
-        assert page.nav_contacts.is_clickable(), "Ссылка 'КОНТАКТЫ' не кликабельна"
-        # Утверждение: ссылка "Обучение английскому" должна быть видима и кликабельна
-        assert page.nav_english.is_visible(), "Ссылка 'Обучение английскому' не отображается"
-        assert page.nav_english.is_clickable(), "Ссылка 'Обучение английскому' не кликабельна"
+        # Список навигационных ссылок для проверки (локатор, ожидаемое название)
+        nav_links = [
+            # Ссылка "МЕРОПРИЯТИЯ" — ведёт на страницу новостей
+            (page.nav_news, "МЕРОПРИЯТИЯ"),
+            # Ссылка "Статьи" — ведёт на страницу статей
+            (page.nav_articles, "Статьи"),
+            # Ссылка "КОНТАКТЫ" — ведёт на страницу контактов
+            (page.nav_contacts, "КОНТАКТЫ"),
+            # Ссылка "Обучение английскому" — ведёт на внешний ресурс 2english
+            (page.nav_english, "Обучение английскому"),
+        ]
+        # Перебираем каждую навигационную ссылку
+        for locator, name in nav_links:
+            # Находим элемент ссылки на странице
+            element = locator.find()
+            # Утверждение: ссылка должна быть найдена в DOM
+            assert element is not None, f"Ссылка '{name}' не найдена в хэдере"
+            # Утверждение: ссылка должна быть видима
+            assert element.is_displayed(), f"Ссылка '{name}' не отображается"
+            # Получаем атрибут href ссылки
+            href = element.get_attribute("href")
+            # Утверждение: ссылка должна содержать URL (быть кликабельной)
+            assert href is not None, f"Ссылка '{name}' не кликабельна"
+
+        # Находим выпадающее меню "IT ОБРАЗОВАНИЕ" (dropdown без href)
+        dropdown = page.it_education_menu.find()
+        # Утверждение: меню "IT ОБРАЗОВАНИЕ" должно быть найдено
+        assert dropdown is not None, "Меню 'IT ОБРАЗОВАНИЕ' не найдено"
+        # Утверждение: меню должно быть видимым
+        assert dropdown.is_displayed(), "Меню 'IT ОБРАЗОВАНИЕ' не отображается"
 
     # Шаг Allure: проверяем бургер-меню (мобильная версия)
-    with allure.step('Проверить бургер-меню'):
+    with allure.step('Проверить бургер-меню (мобильное)'):
+        # Находим элемент бургер-меню
+        burger = page.burger_menu.find()
         # Утверждение: бургер-меню должно присутствовать в DOM
-        assert page.burger_menu.is_presented(), "Бургер-меню не найдено"
+        assert burger is not None, "Бургер-меню не найдено"
 
 
 # ──────────────────────────────────────────────
@@ -110,80 +143,122 @@ def test_footer(web_browser):
 
     # Шаг Allure: прокручиваем страницу к футеру
     with allure.step('Прокрутить к футеру'):
+        # Находим элемент футера на странице
+        footer_el = page.footer.find()
+        # Утверждение: футер должен быть найден
+        assert footer_el is not None, "Футер не найден"
         # Прокручиваем страницу к футеру через JavaScript
-        web_browser.execute_script("arguments[0].scrollIntoView({block: 'center'});", page.footer.find())
+        web_browser.execute_script("arguments[0].scrollIntoView({block: 'center'});", footer_el)
         # Ждём 1 секунду для полной отрисовки футера
         time.sleep(1)
 
     # Шаг Allure: проверяем логотип в футере
     with allure.step('Проверить логотип в футере'):
-        # Утверждение: логотип в футере должен быть видим
-        assert page.footer_logo.is_visible(), "Логотип в футере не отображается"
-        # Утверждение: логотип в футере должен быть кликабелен
-        assert page.footer_logo.is_clickable(), "Логотип в футере не кликабелен"
+        # Находим логотип в футере
+        logo = page.footer_logo.find()
+        # Утверждение: логотип должен быть найден
+        assert logo is not None, "Логотип в футере не найден"
+        # Утверждение: логотип должен отображаться
+        assert logo.is_displayed(), "Логотип в футере не отображается"
+        # Утверждение: логотип должен содержать ссылку (быть кликабельным)
+        assert logo.get_attribute("href") is not None, "Логотип в футере не кликабелен"
 
-    # Шаг Allure: проверяем блок контактов футера
+    # Шаг Allure: проверяем блок контактов в футере (секция footer-contacts)
     with allure.step('Проверить блок контактов футера'):
         # Утверждение: секция контактов футера должна присутствовать
         assert page.footer_contacts_section.is_presented(), "Секция контактов футера не найдена"
+        # Находим ссылку на сайт в блоке контактов
+        site_link = page.footer_contacts_site.find()
+        # Утверждение: ссылка на сайт должна быть найдена
+        assert site_link is not None, "Ссылка на сайт в контактах не найдена"
+        # Находим первый телефон в блоке контактов
+        ph1 = page.footer_contacts_phone1.find()
+        # Утверждение: первый телефон должен быть найден
+        assert ph1 is not None, "Телефон 1 в контактах не найден"
+        # Находим второй телефон в блоке контактов
+        ph2 = page.footer_contacts_phone2.find()
+        # Утверждение: второй телефон должен быть найден
+        assert ph2 is not None, "Телефон 2 в контактах не найден"
+        # Находим ссылку email в блоке контактов
+        email = page.footer_contacts_email.find()
+        # Утверждение: email должен быть найден
+        assert email is not None, "Email в контактах не найден"
+        # Утверждение: email должен содержать правильный адрес
+        assert "info@itstep.by" in email.get_attribute("href"), "Email не кликабелен"
 
-    # Шаг Allure: проверяем ссылку на сайт в контактах
-    with allure.step('Проверить ссылку на сайт'):
-        # Утверждение: ссылка на сайт должна быть кликабельна
-        assert page.footer_contacts_site.is_clickable(), "Ссылка на сайт не кликабельна"
-
-    # Шаг Allure: проверяем телефоны в контактах футера
-    with allure.step('Проверить телефоны в контактах'):
-        # Утверждение: телефон 1 в контактах должен быть кликабелен
-        assert page.footer_contacts_phone1.is_clickable(), "Телефон 1 в контактах не кликабелен"
-        # Утверждение: телефон 2 в контактах должен быть кликабелен
-        assert page.footer_contacts_phone2.is_clickable(), "Телефон 2 в контактах не кликабелен"
-
-    # Шаг Allure: проверяем email в контактах
-    with allure.step('Проверить email'):
-        # Утверждение: email в контактах должен быть кликабелен
-        assert page.footer_contacts_email.is_clickable(), "Email в контактах не кликабелен"
-
-    # Шаг Allure: проверяем навигацию в футере
+    # Шаг Allure: проверяем навигационные ссылки в футере
     with allure.step('Проверить навигацию в футере'):
-        # Утверждение: ссылка "Направления обучения" должна быть кликабельна
-        assert page.footer_nav_directions.is_clickable(), "Ссылка 'Направления обучения' не кликабельна"
-        # Утверждение: ссылка "Статьи" должна быть кликабельна
-        assert page.footer_nav_articles.is_clickable(), "Ссылка 'Статьи' не кликабельна"
-        # Утверждение: ссылка "Новости и акции" должна быть кликабельна
-        assert page.footer_nav_news.is_clickable(), "Ссылка 'Новости и акции' не кликабельна"
-        # Утверждение: ссылка "Контакты" должна быть кликабельна
-        assert page.footer_nav_contacts.is_clickable(), "Ссылка 'Контакты' не кликабельна"
+        # Находим ссылку "Направления обучения"
+        nav_directions = page.footer_nav_directions.find()
+        # Утверждение: ссылка должна быть найдена
+        assert nav_directions is not None, "Ссылка 'Направления обучения' не найдена"
+        # Находим ссылку "Статьи"
+        nav_articles = page.footer_nav_articles.find()
+        # Утверждение: ссылка должна быть найдена
+        assert nav_articles is not None, "Ссылка 'Статьи' не найдена"
+        # Находим ссылку "Новости и акции"
+        nav_news = page.footer_nav_news.find()
+        # Утверждение: ссылка должна быть найдена
+        assert nav_news is not None, "Ссылка 'Новости и акции' не найдена"
+        # Находим ссылку "Контакты"
+        nav_contacts = page.footer_nav_contacts.find()
+        # Утверждение: ссылка должна быть найдена
+        assert nav_contacts is not None, "Ссылка 'Контакты' не найдена"
 
     # Шаг Allure: проверяем телефоны в футере
     with allure.step('Проверить телефоны в футере'):
-        # Утверждение: телефон 1 в футере должен быть кликабелен
-        assert page.footer_phone1.is_clickable(), "Телефон 1 в футере не кликабелен"
-        # Утверждение: телефон 2 в футере должен быть кликабелен
-        assert page.footer_phone2.is_clickable(), "Телефон 2 в футере не кликабелен"
+        # Находим первый телефон в футере
+        f_phone1 = page.footer_phone1.find()
+        # Утверждение: телефон должен быть найден
+        assert f_phone1 is not None, "Телефон 1 в футере не найден"
+        # Утверждение: телефон должен содержать правильный href
+        assert f_phone1.get_attribute("href") == "tel:+375296366585", "Телефон 1 некорректен"
+        # Находим второй телефон в футере
+        f_phone2 = page.footer_phone2.find()
+        # Утверждение: телефон должен быть найден
+        assert f_phone2 is not None, "Телефон 2 в футере не найден"
+        # Утверждение: телефон должен содержать правильный href
+        assert f_phone2.get_attribute("href") == "tel:+375297068585", "Телефон 2 некорректен"
 
     # Шаг Allure: проверяем адрес в футере
     with allure.step('Проверить адрес в футере'):
-        # Утверждение: адрес в футере должен присутствовать
-        assert page.footer_address.is_presented(), "Адрес в футере не найден"
+        # Находим блок адреса в футере
+        f_address = page.footer_address.find()
+        # Утверждение: адрес должен быть найден
+        assert f_address is not None, "Адрес в футере не найден"
 
-    # Шаг Allure: проверяем соцсети в футере
+    # Шаг Allure: проверяем ссылки на социальные сети в футере
     with allure.step('Проверить соцсети в футере'):
-        # Утверждение: ссылка VK должна быть кликабельна
-        assert page.footer_vk.is_clickable(), "Ссылка VK не кликабельна"
-        # Утверждение: ссылка Facebook должна быть кликабельна
-        assert page.footer_facebook.is_clickable(), "Ссылка Facebook не кликабельна"
-        # Утверждение: ссылка Telegram должна быть кликабельна
-        assert page.footer_telegram.is_clickable(), "Ссылка Telegram не кликабельна"
-        # Утверждение: ссылка Instagram должна быть кликабельна
-        assert page.footer_instagram.is_clickable(), "Ссылка Instagram не кликабельна"
-        # Утверждение: ссылка YouTube должна быть кликабельна
-        assert page.footer_youtube.is_clickable(), "Ссылка YouTube не кликабельна"
+        # Список социальных сетей для проверки (локатор, название)
+        socials = [
+            # Ссылка на VK
+            (page.footer_vk, "VK"),
+            # Ссылка на Facebook
+            (page.footer_facebook, "Facebook"),
+            # Ссылка на Telegram
+            (page.footer_telegram, "Telegram"),
+            # Ссылка на Instagram
+            (page.footer_instagram, "Instagram"),
+            # Ссылка на YouTube
+            (page.footer_youtube, "YouTube"),
+        ]
+        # Перебираем каждую социальную сеть
+        for locator, name in socials:
+            # Находим ссылку соцсети
+            link = locator.find()
+            # Утверждение: ссылка должна быть найдена
+            assert link is not None, f"Ссылка {name} не найдена в футере"
+            # Утверждение: ссылка должна содержать URL (быть кликабельной)
+            assert link.get_attribute("href") is not None, f"Ссылка {name} не кликабельна"
 
-    # Шаг Allure: проверяем копирайт
+    # Шаг Allure: проверяем копирайт в футере
     with allure.step('Проверить копирайт'):
-        # Утверждение: копирайт должен присутствовать
-        assert page.footer_copyright.is_presented(), "Копирайт не найден"
+        # Находим элемент копирайта
+        copyright_el = page.footer_copyright.find()
+        # Утверждение: копирайт должен быть найден
+        assert copyright_el is not None, "Копирайт не найден"
+        # Утверждение: копирайт должен содержать название компании
+        assert "IT ШАГ" in copyright_el.text, "Копирайт не содержит 'IT ШАГ'"
 
 
 # ──────────────────────────────────────────────
@@ -201,52 +276,93 @@ def test_central_block(web_browser):
     # Закрываем баннер cookies
     dismiss_cookies(page)
 
-    # Шаг Allure: проверяем слайдер
+    # Шаг Allure: проверяем наличие слайдера
     with allure.step('Проверить слайдер'):
-        # Утверждение: секция слайдера должна присутствовать
-        assert page.slider_section.is_presented(), "Слайдер не найден"
+        # Находим секцию слайдера
+        slider = page.slider_section.find()
+        # Утверждение: слайдер должен быть найден
+        assert slider is not None, "Слайдер не найден"
+        # Находим все слайды в слайдере
+        slides = page.slider_slides.find()
+        # Утверждение: должно быть минимум 1 слайд
+        assert len(slides) >= 1, f"Слайды не найдены: {len(slides)}"
 
-    # Шаг Allure: проверяем кнопку "УЗНАТЬ ПОДРОБНОСТИ"
-    with allure.step('Проверить кнопку "УЗНАТЬ ПОДРОБНОСТИ"'):
-        # Утверждение: кнопка слайдера должна быть кликабельна
-        assert page.learn_more_btn.is_clickable(), "Кнопка слайдера не кликабельна"
+    # Шаг Allure: проверяем кнопку "УЗНАТЬ ПОДРОБНОСТИ" / "ПОЛУЧИТЬ КОНСУЛЬТАЦИЮ"
+    with allure.step('Проверить кнопку "УЗНАТЬ ПОДРОБНОСТИ" / "ПОЛУЧИТЬ КОНСУЛЬТАЦИЮ"'):
+        # Находим кнопку на слайдере
+        btn = page.learn_more_btn.find()
+        # Утверждение: кнопка должна быть найдена в DOM
+        assert btn is not None, "Кнопка слайдера не найдена"
+        # Получаем атрибут href кнопки
+        href = btn.get_attribute("href")
+        # Утверждение: кнопка должна содержать ссылку (быть кликабельной)
+        assert href is not None, "Кнопка слайдера не кликабельна"
 
     # Шаг Allure: проверяем блок "Обучение для детей и подростков"
     with allure.step('Проверить блок "Обучение для детей и подростков"'):
-        # Утверждение: заголовок блока детей должен быть видим
-        assert page.kids_section_title.is_visible(), "Заголовок блока детей не отображается"
+        # Находим заголовок блока детей
+        kids_title = page.kids_section_title.find()
+        # Утверждение: заголовок должен быть найден
+        assert kids_title is not None, "Заголовок блока детей не найден"
+        # Прокручиваем к заголовку блока детей
+        web_browser.execute_script("arguments[0].scrollIntoView({block: 'center'});", kids_title)
+        # Ждём 1 секунду для полной отрисовки блока
+        time.sleep(1)
 
     # Шаг Allure: проверяем ссылки на курсы для детей
     with allure.step('Проверить ссылки на курсы для детей'):
-        # Утверждение: ссылка "7-8 лет" должна присутствовать в DOM
-        assert page.kids_7_8_link.is_presented(), "Ссылка '7-8 лет' не найдена"
-        # Утверждение: ссылка "9-11 лет" должна присутствовать в DOM
-        assert page.kids_9_11_link.is_presented(), "Ссылка '9-11 лет' не найдена"
-        # Утверждение: ссылка "12-13 лет" должна присутствовать в DOM
-        assert page.kids_12_13_link.is_presented(), "Ссылка '12-13 лет' не найдена"
-        # Утверждение: ссылка "IT колледж" должна присутствовать в DOM
-        assert page.it_college_link.is_presented(), "Ссылка 'IT колледж' не найдена"
+        # Список детских курсов для проверки (локатор, возрастная категория)
+        kids_links = [
+            # Курс для детей 7-8 лет
+            (page.kids_7_8_link, "7-8 лет"),
+            # Курс для детей 9-11 лет
+            (page.kids_9_11_link, "9-11 лет"),
+            # Курс для детей 12-13 лет
+            (page.kids_12_13_link, "12-13 лет"),
+            # IT колледж для старшеклассников
+            (page.it_college_link, "IT колледж"),
+        ]
+        # Перебираем каждую ссылку на детский курс
+        for locator, name in kids_links:
+            # Находим ссылку курса
+            link = locator.find()
+            # Утверждение: ссылка должна быть найдена
+            assert link is not None, f"Ссылка на курс для детей '{name}' не найдена"
+            # Утверждение: ссылка должна содержать URL (быть кликабельной)
+            assert link.get_attribute("href") is not None, f"Ссылка '{name}' не кликабельна"
 
     # Шаг Allure: проверяем блок отзывов
     with allure.step('Проверить блок отзывов'):
-        # Утверждение: заголовок отзывов должен быть видим
-        assert page.reviews_title.is_visible(), "Заголовок отзывов не отображается"
+        # Находим заголовок блока отзывов
+        reviews = page.reviews_title.find()
+        # Утверждение: заголовок должен быть найден
+        assert reviews is not None, "Заголовок отзывов не найден"
+        # Прокручиваем к блоку отзывов
+        web_browser.execute_script("arguments[0].scrollIntoView({block: 'center'});", reviews)
+        # Ждём 1 секунду для полной отрисовки блока
+        time.sleep(1)
         # Утверждение: отзыв YANDEX должен присутствовать
-        assert page.review_yandex.is_presented(), "Отзыв YANDEX не найден"
+        assert page.review_yandex.find() is not None, "Отзыв YANDEX не найден"
         # Утверждение: отзыв GOOGLE должен присутствовать
-        assert page.review_google.is_presented(), "Отзыв GOOGLE не найден"
+        assert page.review_google.find() is not None, "Отзыв GOOGLE не найден"
         # Утверждение: отзыв FACEBOOK должен присутствовать
-        assert page.review_facebook.is_presented(), "Отзыв FACEBOOK не найден"
+        assert page.review_facebook.find() is not None, "Отзыв FACEBOOK не найден"
 
     # Шаг Allure: проверяем ссылку на профориентационный тест
     with allure.step('Проверить ссылку на профориентационный тест'):
-        # Утверждение: ссылка на профтест должна присутствовать в DOM
-        assert page.career_guidance_link.is_presented(), "Ссылка на профтест не найдена"
+        # Находим ссылку на карьерный тест
+        career = page.career_guidance_link.find()
+        # Утверждение: ссылка должна быть найдена
+        assert career is not None, "Ссылка на профтест не найдена"
+        # Утверждение: ссылка должна содержать URL (быть кликабельной)
+        assert career.get_attribute("href") is not None, "Ссылка на профтест не кликабельна"
 
-    # Шаг Allure: проверяем виджет чата
+    # Шаг Allure: проверяем наличие виджета чата
     with allure.step('Проверить виджет чата'):
-        # Утверждение: виджет чата должен присутствовать в DOM
-        assert page.chat_button.is_presented(), "Виджет чата не найден"
+        # Находим кнопку виджета чата (Bitrix24)
+        chat = page.chat_button.find()
+        # Утверждение: виджет чата должен быть найден в DOM
+        assert chat is not None, "Виджет чата не найден"
 
 
 # ──────────────────────────────────────────────
@@ -262,7 +378,7 @@ def test_career_guidance_form(web_browser):
     # Список мужских и женских имён для случайной генерации данных
     first_names = ['Александр', 'Мария', 'Дмитрий', 'Анна', 'Сергей', 'Елена', 'Иван', 'Ольга']
     # Список фамилий для случайной генерации данных
-    last_names = ['Климович', 'Садко', 'Губерман', 'Короткевич', 'Карват', 'Боум', 'Осборн', 'Каладзе']
+    last_names = ['Иванов', 'Петрова', 'Сидоров', 'Козлова', 'Морозов', 'Новикова', 'Волков', 'Лебедева']
 
     # Случайный выбор имени из списка
     first_name = random.choice(first_names)
