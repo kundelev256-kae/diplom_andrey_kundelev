@@ -546,7 +546,7 @@
         </div>
         <div class="about-stats fade-up">
             <div class="about-stat">
-                <div class="num">158+</div>
+                <div class="num">141+</div>
                 <div class="lbl">автотестов написано</div>
             </div>
             <div class="about-stat">
@@ -588,7 +588,7 @@
             <div class="project-badge">Завершён</div>
         </div>
         <div class="project-body">
-            <p>Система автоматизированного тестирования сайта IT Академии STEP. Включает 158+ тестов, Page Object архитектуру, Allure-отчёты и Telegram-бота для удалённого запуска.</p>
+            <p>Система автоматизированного тестирования сайта IT Академии STEP. Включает 141+ тестов, Page Object архитектуру, Allure-отчёты и Telegram-бота для удалённого запуска.</p>
             <div class="project-tags">
                 <span class="project-tag">Selenium</span>
                 <span class="project-tag">pytest</span>
@@ -598,9 +598,9 @@
                 <span class="project-tag">Locust</span>
             </div>
             <div class="project-metrics">
-                <div><div class="metric-val">158+</div><div class="metric-lbl">тестов</div></div>
-                <div><div class="metric-val">6</div><div class="metric-lbl">UI тестов</div></div>
-                <div><div class="metric-val">130+</div><div class="metric-lbl">API тестов</div></div>
+                <div><div class="metric-val">141+</div><div class="metric-lbl">тестов</div></div>
+                <div><div class="metric-val">4</div><div class="metric-lbl">UI тестов</div></div>
+                <div><div class="metric-val">137+</div><div class="metric-lbl">API тестов</div></div>
             </div>
         </div>
     </div>
@@ -628,32 +628,22 @@
                     <span class="test-group-label">UI тесты (Selenium)</span>
                 </div>
                 <label class="cb-wrap">
-                    <input type="checkbox" class="test-cb" data-suite="ui" data-test="test_go_to_vacancies" checked>
+                    <input type="checkbox" class="test-cb" data-suite="ui" data-test="test_header" checked>
                     <span class="cb-mark"></span>
-                    <span class="cb-label">test_go_to_vacancies</span>
+                    <span class="cb-label">test_header</span>
                 </label>
                 <label class="cb-wrap">
-                    <input type="checkbox" class="test-cb" data-suite="ui" data-test="test_go_to_contacts" checked>
+                    <input type="checkbox" class="test-cb" data-suite="ui" data-test="test_footer" checked>
                     <span class="cb-mark"></span>
-                    <span class="cb-label">test_go_to_contacts</span>
+                    <span class="cb-label">test_footer</span>
                 </label>
                 <label class="cb-wrap">
-                    <input type="checkbox" class="test-cb" data-suite="ui" data-test="test_go_to_qa_course" checked>
+                    <input type="checkbox" class="test-cb" data-suite="ui" data-test="test_central_block" checked>
                     <span class="cb-mark"></span>
-                    <span class="cb-label">test_go_to_qa_course</span>
+                    <span class="cb-label">test_central_block</span>
                 </label>
                 <label class="cb-wrap">
-                    <input type="checkbox" class="test-cb" data-suite="ui" data-test="test_feedback_form" checked>
-                    <span class="cb-mark"></span>
-                    <span class="cb-label">test_feedback_form</span>
-                </label>
-                <label class="cb-wrap">
-                    <input type="checkbox" class="test-cb" data-suite="ui" data-test="test_page_title">
-                    <span class="cb-mark"></span>
-                    <span class="cb-label">test_page_title</span>
-                </label>
-                <label class="cb-wrap">
-                    <input type="checkbox" class="test-cb" data-suite="ui" data-test="test_career_guidance_form">
+                    <input type="checkbox" class="test-cb" data-suite="ui" data-test="test_career_guidance_form" checked>
                     <span class="cb-mark"></span>
                     <span class="cb-label">test_career_guidance_form</span>
                 </label>
@@ -683,9 +673,9 @@
                     <span class="cb-label">test_main_page_response_time</span>
                 </label>
                 <label class="cb-wrap">
-                    <input type="checkbox" class="test-cb" data-suite="api" data-test="test_http_to_https_redirect" checked>
+                    <input type="checkbox" class="test-cb" data-suite="api" data-test="test_security_headers_present" checked>
                     <span class="cb-mark"></span>
-                    <span class="cb-label">test_http_to_https_redirect</span>
+                    <span class="cb-label">test_security_headers_present</span>
                 </label>
                 <label class="cb-wrap">
                     <input type="checkbox" class="test-cb" data-suite="api" data-test="test_robots_txt_status" checked>
@@ -884,20 +874,21 @@ function termClear() {
 function sleep(ms) { return new Promise(r => { runTimer = setTimeout(r, ms); }); }
 
 const UI_TESTS = [
-    { name: 'test_go_to_vacancies', title: 'Проверка кнопки "Вакансии"', time: () => 1.2 + Math.random() * 1.5 },
-    { name: 'test_go_to_contacts', title: 'Проверка кнопки "Контакты"', time: () => 1.0 + Math.random() * 1.2 },
-    { name: 'test_go_to_qa_course', title: 'Проверка перехода на курс QA', time: () => 2.0 + Math.random() * 2.0 },
-    { name: 'test_feedback_form', title: 'Проверка формы обратной связи', time: () => 2.5 + Math.random() * 2.5 },
-    { name: 'test_page_title', title: 'Проверка заголовка страницы', time: () => 0.8 + Math.random() * 0.8 },
-    { name: 'test_career_guidance_form', title: 'E2E: Профориентационный тест', time: () => 4.0 + Math.random() * 3.0 },
+    { name: 'test_header', title: 'Проверка хэдера: логотип, телефоны, навигация', time: () => 2.5 + Math.random() * 2.0 },
+    { name: 'test_footer', title: 'Проверка футера: контакты, соцсети, навигация', time: () => 2.0 + Math.random() * 1.8 },
+    { name: 'test_central_block', title: 'Проверка центрального блока: слайдер, дети, отзывы', time: () => 2.5 + Math.random() * 2.0 },
+    { name: 'test_career_guidance_form', title: 'E2E: Профориентационный тест — заполнение формы', time: () => 5.0 + Math.random() * 4.0 },
 ];
 
 const API_TESTS = [
-    { name: 'test_main_page_status', title: 'HTTP статус главной', time: () => 0.3 + Math.random() * 0.8 },
-    { name: 'test_main_page_response_time', title: 'Время отклика главной', time: () => 0.5 + Math.random() * 1.0 },
-    { name: 'test_http_to_https_redirect', title: 'HTTP->HTTPS редирект', time: () => 0.2 + Math.random() * 0.5 },
+    { name: 'test_main_page_status', title: 'HTTP статус главной страницы', time: () => 0.3 + Math.random() * 0.8 },
+    { name: 'test_main_page_response_time', title: 'Время отклика главной страницы', time: () => 0.5 + Math.random() * 1.0 },
+    { name: 'test_security_headers_present', title: 'Наличие security-заголовков', time: () => 0.3 + Math.random() * 0.5 },
     { name: 'test_robots_txt_status', title: 'robots.txt доступен', time: () => 0.2 + Math.random() * 0.3 },
-    { name: 'test_ssl_certificate_valid', title: 'SSL сертификат валиден', time: () => 0.3 + Math.random() * 0.4 },
+    { name: 'test_ssl_certificate_valid', title: 'SSL-сертификат валиден', time: () => 0.3 + Math.random() * 0.4 },
+    { name: 'test_main_page_content_type', title: 'Content-Type главной страницы', time: () => 0.2 + Math.random() * 0.3 },
+    { name: 'test_head_main_page', title: 'HEAD-запрос главной страницы', time: () => 0.2 + Math.random() * 0.3 },
+    { name: 'test_cache_headers', title: 'Заголовки кеширования', time: () => 0.3 + Math.random() * 0.4 },
 ];
 
 async function runTests() {
@@ -927,9 +918,9 @@ async function runTests() {
 
     // Build command
     let cmd = 'pytest -s -v';
-    if (uiTests.length && !apiTests.length) cmd += ' test/test_main.py';
-    else if (!uiTests.length && apiTests.length) cmd += ' test/test_api.py';
-    else if (uiTests.length && apiTests.length) cmd += ' test/test_main.py test/test_api.py';
+    if (uiTests.length && !apiTests.length) cmd += ' test/ui/test_main.py';
+    else if (!uiTests.length && apiTests.length) cmd += ' test/api/test_api.py';
+    else if (uiTests.length && apiTests.length) cmd += ' test/ui/test_main.py test/api/test_api.py';
     if (uiMode === 'headless') cmd += ' --headless';
     cmd += ' --alluredir=./results';
 
@@ -941,7 +932,7 @@ async function runTests() {
     termWrite(`<span class="t-dim">============================= test session starts =============================</span>`);
     termWrite(`<span class="t-dim">platform win32 -- Python 3.14.0, pytest-8.3.5, pluggy-1.5.0</span>`);
     termWrite(`<span class="t-dim">cachedir: .pytest_cache</span>`);
-    termWrite(`<span class="t-dim">rootdir: C:\\diplom_andrey_kundelev</span>`);
+    termWrite(`<span class="t-dim">rootdir: /home/andrey/PycharmProjects/diplom_andrey_kundelev2</span>`);
     termWrite(`<span class="t-dim">configfile: pyproject.toml</span>`);
     if (uiMode === 'headless') termWrite(`<span class="t-dim">headless mode: --headless=new</span>`);
     termWrite(`<span class="t-dim">allure dir: ./results</span>`);
@@ -958,20 +949,20 @@ async function runTests() {
             const test = UI_TESTS.find(t => t.name === testName);
             if (!test) continue;
             const dur = test.time();
-            termWrite(`<span class="t-dim">  RUN   </span>test/test_main.py::${test.name} <span class="t-dim">${test.title}...</span>`);
+            termWrite(`<span class="t-dim">  RUN   </span>test/ui/test_main.py::${test.name} <span class="t-dim">${test.title}...</span>`);
             await sleep(dur * 600);
 
             // 90% pass rate, 5% skip
             const roll = Math.random();
             if (roll < 0.9) {
                 passed++;
-                termWrite(`<span class="t-green">  PASSED</span> test/test_main.py::${test.name} <span class="t-dim">[ ${dur.toFixed(1)}s ]</span>`);
+                termWrite(`<span class="t-green">  PASSED</span> test/ui/test_main.py::${test.name} <span class="t-dim">[ ${dur.toFixed(1)}s ]</span>`);
             } else if (roll < 0.95) {
                 skipped++;
-                termWrite(`<span class="t-yellow">  SKIPPED</span> test/test_main.py::${test.name} <span class="t-dim">[ ${dur.toFixed(1)}s ]</span>`);
+                termWrite(`<span class="t-yellow">  SKIPPED</span> test/ui/test_main.py::${test.name} <span class="t-dim">[ ${dur.toFixed(1)}s ]</span>`);
             } else {
                 failed++;
-                termWrite(`<span class="t-red">  FAILED</span> test/test_main.py::${test.name} <span class="t-dim">[ ${dur.toFixed(1)}s ]</span>`);
+                termWrite(`<span class="t-red">  FAILED</span> test/ui/test_main.py::${test.name} <span class="t-dim">[ ${dur.toFixed(1)}s ]</span>`);
                 termWrite(`<span class="t-dim">    E   AssertionError: element not found within timeout</span>`);
             }
         }
@@ -986,19 +977,19 @@ async function runTests() {
             const test = API_TESTS.find(t => t.name === testName);
             if (!test) continue;
             const dur = test.time();
-            termWrite(`<span class="t-dim">  RUN   </span>test/test_api.py::${test.name} <span class="t-dim">${test.title}...</span>`);
+            termWrite(`<span class="t-dim">  RUN   </span>test/api/test_api.py::${test.name} <span class="t-dim">${test.title}...</span>`);
             await sleep(dur * 500);
 
             const roll = Math.random();
             if (roll < 0.92) {
                 passed++;
-                termWrite(`<span class="t-green">  PASSED</span> test/test_api.py::${test.name} <span class="t-dim">[ ${dur.toFixed(2)}s ]</span>`);
+                termWrite(`<span class="t-green">  PASSED</span> test/api/test_api.py::${test.name} <span class="t-dim">[ ${dur.toFixed(2)}s ]</span>`);
             } else if (roll < 0.96) {
                 skipped++;
-                termWrite(`<span class="t-yellow">  SKIPPED</span> test/test_api.py::${test.name} <span class="t-dim">[ ${dur.toFixed(2)}s ]</span>`);
+                termWrite(`<span class="t-yellow">  SKIPPED</span> test/api/test_api.py::${test.name} <span class="t-dim">[ ${dur.toFixed(2)}s ]</span>`);
             } else {
                 failed++;
-                termWrite(`<span class="t-red">  FAILED</span> test/test_api.py::${test.name} <span class="t-dim">[ ${dur.toFixed(2)}s ]</span>`);
+                termWrite(`<span class="t-red">  FAILED</span> test/api/test_api.py::${test.name} <span class="t-dim">[ ${dur.toFixed(2)}s ]</span>`);
                 termWrite(`<span class="t-dim">    E   ConnectionError: timeout after ${apiTimeout}s</span>`);
             }
         }
@@ -1102,7 +1093,7 @@ function buildAllureReport(uiTests, apiTests, passed, failed, skipped) {
             else if (roll > 0.88) status = 'skipped';
             return { name, title: test?.title || name, status, time: dur + 's' };
         });
-        suites.push({ name: 'test/test_main.py — UI тесты (Selenium)', results: uiResults });
+        suites.push({ name: 'test/ui/test_main.py — UI тесты (Selenium)', results: uiResults });
     }
 
     if (apiTests.length) {
@@ -1115,7 +1106,7 @@ function buildAllureReport(uiTests, apiTests, passed, failed, skipped) {
             else if (roll > 0.90) status = 'skipped';
             return { name, title: test?.title || name, status, time: dur + 's' };
         });
-        suites.push({ name: 'test/test_api.py — API тесты (requests)', results: apiResults });
+        suites.push({ name: 'test/api/test_api.py — API тесты (requests)', results: apiResults });
     }
 
     return { suites, passed, failed, skipped, timestamp: new Date().toLocaleString('ru-RU') };
@@ -1208,7 +1199,7 @@ aiOverlay.addEventListener('click', (e) => { if (e.target === aiOverlay) aiOverl
 const AI_RESPONSES = {
     'привет': 'Привет! Я QA-ассистент проекта. Могу рассказать о стеке, архитектуре или принципах тестирования.',
     'стек': 'Стек проекта: Python 3.14, Selenium для UI-тестов, pytest как фреймворк, Allure для отчётов, requests для API-тестов, Locust для нагрузки, python-telegram-bot для бота.',
-    'тест': 'Проект содержит 158+ тестов: 5 UI-тестов (Selenium + Page Object Model) и 130+ API-тестов (requests). Все запускаются через pytest с автогенерацией Allure-отчётов.',
+    'тест': 'Проект содержит 141+ тестов: 4 UI-теста (Selenium + Page Object Model) и 137+ API-тестов (requests). Все запускаются через pytest с автогенерацией Allure-отчётов.',
     'pom': 'Page Object Model — паттерн проектирования, где каждая страница сайта представлена отдельным классом. Базовый класс WebPage содержит общие методы (open, find, click), а наследники — локаторы и специфичные действия.',
     'allure': 'Allure Report — инструмент визуализации результатов тестов. Показывает шаги, скриншоты при ошибках, историю запусков. Генерируется командой: allure generate ./results --clean -o ./allure-report',
     'bot': 'Telegram-бот позволяет удалённо запускать тесты, получать отчёты и общаться с AI-ассистентом. Команды: /run_all, /run_ui, /run_api, /run_load, /report, /ai',

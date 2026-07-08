@@ -195,7 +195,7 @@ async def run_all_tests(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     # Запускаем pytest с Allure-репортёрскими опциями
     result = await execute_command(
-        "pytest -s -v test/test_main.py test/test_api.py --alluredir=./results",  # -s: без захвата, -v: подробный вывод
+        "pytest -s -v test/ui/test_main.py test/api/test_api.py --alluredir=./results",  # -s: без захвата, -v: подробный вывод
         update, context
     )
 
@@ -223,7 +223,7 @@ async def run_ui_tests(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     # Запускаем только UI-тесты (test_main.py)
     result = await execute_command(
-        "pytest -s -v test/test_main.py --alluredir=./results",
+        "pytest -s -v test/ui/test_main.py --alluredir=./results",
         update, context
     )
 
@@ -247,7 +247,7 @@ async def run_api_tests(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     # Запускаем только API-тесты (test_api.py)
     result = await execute_command(
-        "pytest -s -v test/test_api.py --alluredir=./results",
+        "pytest -s -v test/api/test_api.py --alluredir=./results",
         update, context
     )
 
