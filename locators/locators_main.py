@@ -16,35 +16,28 @@ class MainPage(WebPage):
         # Если URL не передан, берём его из переменной окружения MAIN или используем значение по умолчанию
         if not url:
             url = os.getenv("MAIN") or 'https://itstep.by/'
-        # Вызов конструктора родительского класса WebPage с драйвером и URL
-        super().__init__(web_driver, url)
+        super().__init__(web_driver, url)  # Вызов конструктора родительского класса WebPage с драйвером и URL
 
     # === Cookies ===
 
-    # Кнопка принятия куки (cookies-уведомление) — ищется по ID кнопки
-    btn_access = WebElement(id="button-accept-cookies")
+    btn_access = WebElement(id="button-accept-cookies")  # Кнопка принятия куки (cookies-уведомление) — ищется по ID кнопки
 
     # === Header ===
 
-    # Логотип сайта — ищется по CSS-селектору .logo a (ссылка внутри блока логотипа)
-    logo = WebElement(css_selector=".logo a")
-    # Блок телефонов — ищется по CSS-селектору .phones
-    phones_block = WebElement(css_selector=".phones")
+    logo = WebElement(css_selector=".logo a")  # Логотип сайта — ищется по CSS-селектору .logo a (ссылка внутри блока логотипа)
+    phones_block = WebElement(css_selector=".phones")  # Блок телефонов — ищется по CSS-селектору .phones
     # Все ссылки телефонов в блоке контактов — ManyWebElements для получения списка всех номеров
     phone_links = ManyWebElements(css_selector=".info-panel .phone a[href^='tel:']")
-    # Блок адреса компании — ищется по CSS-селектору .address
-    address_block = WebElement(css_selector=".address")
+    address_block = WebElement(css_selector=".address")  # Блок адреса компании — ищется по CSS-селектору .address
     # Текст адреса — ищется по CSS-селектору .address .location
     address_text = WebElement(css_selector=".address .location")
-    # Верхняя панель информации (логотип, телефоны, адрес) — ищется по CSS-селектору .info-panel
-    info_panel = WebElement(css_selector=".info-panel")
-    # Панель меню (навигация) — ищется по CSS-селектору .menu-panel
-    menu_panel = WebElement(css_selector=".menu-panel")
+    info_panel = WebElement(css_selector=".info-panel")  # Верхняя панель информации (логотип, телефоны, адрес) — ищется по CSS-селектору .info-panel
+    menu_panel = WebElement(css_selector=".menu-panel")  # Панель меню (навигация) — ищется по CSS-селектору .menu-panel
 
     # === Header navigation links ===
 
     # Выпадающее меню "IT ОБРАЗОВАНИЕ" — dropdown без href, ищется по тексту в панели меню
-    it_education_menu = WebElement(xpath="//div[contains(@class,'menu-panel')]//div[@class='menu']//a[contains(text(), 'IT ОБРАЗОВАНИЕ')]")
+    it_education_menu = WebElement(xpath="//div[contains(@class,'menu-panel')]//a[contains(normalize-space(.), 'IT ОБРАЗОВАНИЕ')]")
     # Ссылка "МЕРОПРИЯТИЯ" (Новости) — ведёт на страницу новостей, ищется по href в панели меню
     nav_news = WebElement(xpath="//div[contains(@class,'menu-panel')]//a[@href='https://itstep.by/news/']")
     # Ссылка "Статьи" — ведёт на страницу статей, ищется по href в панели меню
@@ -55,8 +48,7 @@ class MainPage(WebPage):
     nav_english = WebElement(xpath="//div[contains(@class,'menu-panel')]//a[@href='https://2english.itstep.by/']")
     # Ссылка "Вакансии" — ведёт на страницу карьеры, ищется по части href в панели меню
     nav_vacancies = WebElement(xpath="//div[contains(@class,'menu-panel')]//a[contains(@href, 'careers')]")
-    # Бургер-меню (мобильная версия навигации) — ищется по CSS-селектору .burger-menu
-    burger_menu = WebElement(css_selector=".burger-menu")
+    burger_menu = WebElement(css_selector=".burger-menu")  # Бургер-меню (мобильная версия навигации) — ищется по CSS-селектору .burger-menu
 
     # === Header IT Education sub-menu courses (курсы в выпадающем меню "IT ОБРАЗОВАНИЕ") ===
 
@@ -92,8 +84,7 @@ class MainPage(WebPage):
 
     # === Central block (центральный блок между хэдером и футером) ===
 
-    # Секция слайдера — ищется по CSS-селектору section.block-1
-    slider_section = WebElement(css_selector="section.block-1")
+    slider_section = WebElement(css_selector="section.block-1")  # Секция слайдера — ищется по CSS-селектору section.block-1
     # Все слайды в слайдере — ManyWebElements для получения списка всех слайдов
     slider_slides = ManyWebElements(css_selector=".slide-container")
     # Кнопка "УЗНАТЬ ПОДРОБНОСТИ" / "ПОЛУЧИТЬ КОНСУЛЬТАЦИЮ" на слайдерах — ищется по комбинации CSS-классов
@@ -106,8 +97,7 @@ class MainPage(WebPage):
 
     # Заголовок блока отзывов — ищется по тексту "ОТЗЫВЫ" в div с классом title
     reviews_title = WebElement(xpath="//div[contains(@class,'title') and contains(text(),'ОТЗЫВЫ')]")
-    # Все карточки отзывов — ищется по CSS-селектору .slide-container (переиспользуется от слайдера)
-    review_cards = WebElement(css_selector=".slide-container")
+    review_cards = WebElement(css_selector=".slide-container")  # Все карточки отзывов — ищется по CSS-селектору .slide-container (переиспользуется от слайдера)
     # Отзыв YANDEX — ищется по тексту "YANDEX" в div с классом slide-title
     review_yandex = WebElement(xpath="//div[contains(@class,'slide-title') and text()='YANDEX']")
     # Отзыв GOOGLE — ищется по тексту "GOOGLE" в div с классом slide-title
@@ -127,8 +117,7 @@ class MainPage(WebPage):
 
     # === Footer (футер) ===
 
-    # Блок футера — ищется по CSS-селектору footer.footer
-    footer = WebElement(css_selector="footer.footer")
+    footer = WebElement(css_selector="footer.footer")  # Блок футера — ищется по CSS-селектору footer.footer
     # Логотип в футере — ищется внутри футера по CSS-селектору .logo
     footer_logo = WebElement(css_selector="footer.footer .logo")
     # Блок копирайта — ищется по CSS-селектору .footer-copyright

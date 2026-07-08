@@ -19,13 +19,10 @@ from selenium.webdriver.chrome.options import Options
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
 # Функция-хук, вызываемая pytest после каждого этапа теста (setup/call/teardown)
 def pytest_runtest_makereport(item, call):
-    # yield передаёт управление следующему хуку в цепочке; outcome содержит результат
-    outcome = yield
-    # Получаем объект отчёта (rep) о текущем этапе выполнения теста
-    rep = outcome.get_result()
+    outcome = yield  # yield передаёт управление следующему хуку в цепочке; outcome содержит результат
+    rep = outcome.get_result()  # Получаем объект отчёта (rep) о текущем этапе выполнения теста
     # Сохраняем отчёт как атрибут тестового элемента с динамическим именем:
-    # rep_setup — для этапа setup, rep_call — для этапа call, rep_teardown — для teardown
-    setattr(item, "rep_" + rep.when, rep)
+    setattr(item, "rep_" + rep.when, rep)  # rep_setup — для этапа setup, rep_call — для этапа call, rep_teardown — для teardown
     # Возвращаем отчёт, чтобы он был доступен другим хукам и фикстурам
     return rep
 
@@ -33,16 +30,11 @@ def pytest_runtest_makereport(item, call):
 # Фикстура pytest, предоставляющая предварительно настроенные опции Chrome
 @pytest.fixture
 def chrome_options():
-    # Создаём объект Options — контейнер для параметров запуска Chrome-драйвера
-    options = Options()
-    # Запуск браузера в режиме headless (без графического интерфейса) — подходит для CI/CD серверов
-    options.add_argument("--headless")
-    # Отключение ускорения отрисовки через GPU — предотвращает ошибки в контейнерах и CI-средах
-    options.add_argument("--disable-gpu")
-    # Отключение песочницы (sandbox) — требуется для запуска от имени root в Docker-контейнерах
-    options.add_argument('--no-sandbox')
-    # Отключение использования /dev/shm — предотвращает ошибки нехватки памяти в контейнерах с ограниченным tmpfs
-    options.add_argument('--disable-dev-shm-usage')
+    options = Options()  # Создаём объект Options — контейнер для параметров запуска Chrome-драйвера
+    options.add_argument("--headless")  # Запуск браузера в режиме headless (без графического интерфейса) — подходит для CI/CD серверов
+    options.add_argument("--disable-gpu")  # Отключение ускорения отрисовки через GPU — предотвращает ошибки в контейнерах и CI-средах
+    options.add_argument('--no-sandbox')  # Отключение песочницы (sandbox) — требуется для запуска от имени root в Docker-контейнерах
+    options.add_argument('--disable-dev-shm-usage')  # Отключение использования /dev/shm — предотвращает ошибки нехватки памяти в контейнерах с ограниченным tmpfs
     # Включение сбора всех логов браузера (console, network, performance и т.д.) через Google Chrome DevTools
     options.set_capability('goog:loggingPrefs', {'browser': 'ALL'})
 
@@ -53,32 +45,25 @@ def chrome_options():
 # Основная фикстура web_browser — создаёт экземпляр браузера Chrome и управляет его жизненным циклом
 @pytest.fixture
 def web_browser(request):
-    # Создаём новый объект Options для настройки Chrome-драйвера
-    options = Options()
-    # Отключение ускорения отрисовки через GPU — предотвращает графические ошибки в headless-режиме
-    options.add_argument('--disable-gpu')
-    # Отключение песочницы — необходимо для корректной работы в Docker-контейнерах
-    options.add_argument('--no-sandbox')
-    # Отключение использования /dev/shm — предотвращает проблемы с памятью в ограниченных средах
-    options.add_argument('--disable-dev-shm-usage')
+    options = Options()  # Создаём новый объект Options для настройки Chrome-драйвера
+    options.add_argument('--disable-gpu')  # Отключение ускорения отрисовки через GPU — предотвращает графические ошибки в headless-режиме
+    options.add_argument('--no-sandbox')  # Отключение песочницы — необходимо для корректной работы в Docker-контейнерах
+    options.add_argument('--disable-dev-shm-usage')  # Отключение использования /dev/shm — предотвращает проблемы с памятью в ограниченных средах
     # Включение сбора всех логов браузера для диагностики при падении тестов
     options.set_capability('goog:loggingPrefs', {'browser': 'ALL'})
 
     # Если в командной строке передан флаг --headless, добавляем аргумент запуска в headless-режиме
     if request.config.getoption("--headless"):
-        # Новый синтаксис headless-режима в актуальных версиях Chrome (>= 109)
-        options.add_argument("--headless=new")
+        options.add_argument("--headless=new")  # Новый синтаксис headless-режима в актуальных версиях Chrome (>= 109)
 
-    # Создаём экземпляр Chrome-драйвера с указанными настройками — запуск браузера
-    browser = webdriver.Chrome(options=options)
-    # Разворачиваем окно браузера на весь экран для корректного отображения элементов страницы
-    browser.maximize_window()
+    browser = webdriver.Chrome(options=options)  # Создаём экземпляр Chrome-драйвера с указанными настройками — запуск браузера
+    browser.set_window_size(1920, 1080)  # Устанавливаем размер окна для корректного отображения всех элементов
+    browser.maximize_window()  # Разворачиваем окно браузера на весь экран для корректного отображения элементов страницы
 
     # yield передаёт управление тесту — браузер остаётся активным до завершения теста
     yield browser
 
-    # Флаг для отслеживания статуса прохождения теста (успешно/неуспешно)
-    failed = False
+    failed = False  # Флаг для отслеживания статуса прохождения теста (успешно/неуспешно)
     # Проверяем, был ли этап call (выполнение тела теста) неуспешным
     if hasattr(request.node, "rep_call") and request.node.rep_call.failed:
         failed = True
@@ -94,30 +79,24 @@ def web_browser(request):
             # Устанавливаем белый фон страницы для улучшения видимости контента на скриншоте
             browser.execute_script("document.body.style.background = 'white';")
 
-            # Формируем уникальное имя файла скриншота с использованием UUID, чтобы избежать перезаписи
-            screenshot_path = f'screenshots/{str(uuid.uuid4())}.png'
-            # Сохраняем скриншот текущего состояния браузера в локальную файловую систему
-            browser.save_screenshot(screenshot_path)
+            screenshot_path = f'screenshots/{str(uuid.uuid4())}.png'  # Формируем уникальное имя файла скриншота с использованием UUID, чтобы избежать перезаписи
+            browser.save_screenshot(screenshot_path)  # Сохраняем скриншот текущего состояния браузера в локальную файловую систему
 
-            # Прикрепляем скриншот в формате PNG к отчёту Allure — визуальное доказательство состояния страницы при ошибке
-            allure.attach(
+            allure.attach(  # Прикрепляем скриншот в формате PNG к отчёту Allure — визуальное доказательство состояния страницы при ошибке
                 browser.get_screenshot_as_png(),  # Получаем скриншот как бинарные данные PNG
                 name=f"{request.function.__name__}_screenshot",  # Имя вложения = имя теста + суффикс
                 attachment_type=allure.attachment_type.PNG  # Тип вложения для корректного отображения в отчёте
             )
 
-            # Выводим текущий URL страницы в консоль — помогает определить, на каком шаге упал тест
-            print('URL: ', browser.current_url)
-            # Выводим заголовок для логов браузера
-            print('Browser logs:')
+            print('URL: ', browser.current_url)  # Выводим текущий URL страницы в консоль — помогает определить, на каком шаге упал тест
+            print('Browser logs:')  # Выводим заголовок для логов браузера
             # Перебираем и печатаем каждую запись из логов браузера (ошибки JS, сетевые запросы и т.д.)
             for log in browser.get_log('browser'):
                 print(log)
 
             # Объединяем все записи логов в одну строку через перенос строки для вложения в Allure
             logs = "\n".join([str(log) for log in browser.get_log('browser')])
-            # Прикрепляем логи браузера как текстовое вложение в отчёт Allure — позволяет анализировать ошибки JS
-            allure.attach(
+            allure.attach(  # Прикрепляем логи браузера как текстовое вложение в отчёт Allure — позволяет анализировать ошибки JS
                 logs,  # Строка с логами браузера
                 name=f"{request.function.__name__}_browser_logs",  # Имя вложения = имя теста + суффикс
                 attachment_type=allure.attachment_type.TEXT  # Тип вложения — текст
@@ -125,13 +104,10 @@ def web_browser(request):
 
         # Перехватываем любые исключения при сборе отчётности, чтобы не потерять результаты теста из-за ошибки логирования
         except Exception as e:
-            # Выводим сообщение об ошибке в консоль — позволяет увидеть проблему при формировании отчёта
-            print(f"Ошибка при создании отчетности: {e}")
+            print(f"Ошибка при создании отчетности: {e}")  # Выводим сообщение об ошибке в консоль — позволяет увидеть проблему при формировании отчёта
 
-    # Задержка 2 секунды перед закрытием браузера — даёт время завершиться фоновым процессам и анимациям на странице
-    time.sleep(2)
-    # Закрываем браузер и освобождаем ресурсы (процесс chromedriver)
-    browser.quit()
+    time.sleep(2)  # Задержка 2 секунды перед закрытием браузера — даёт время завершиться фоновым процессам и анимациям на странице
+    browser.quit()  # Закрываем браузер и освобождаем ресурсы (процесс chromedriver)
 
 
 def pytest_configure(config):
@@ -153,29 +129,21 @@ def get_test_case_docstring(item):
         отображая эту строку в документации вместо имени тестового примера в отчетах.
     """
 
-    # Инициализируем пустую строку для формирования полного имени теста
-    full_name = ''
+    full_name = ''  # Инициализируем пустую строку для формирования полного имени теста
 
     # Проверяем, есть ли у тестовой функции docstring (строка документации)
     if item._obj.__doc__:
-        # Удаляем лишние пробелы из строки документа: берём всё до первой точки, убираем пробелы по краям
-        name = str(item._obj.__doc__.split('.')[0]).strip()
-        # Убираем множественные пробелы между словами, оставляя один пробел
-        full_name = ' '.join(name.split())
+        name = str(item._obj.__doc__.split('.')[0]).strip()  # Удаляем лишние пробелы из строки документа: берём всё до первой точки, убираем пробелы по краям
+        full_name = ' '.join(name.split())  # Убираем множественные пробелы между словами, оставляя один пробел
 
         # Генерируем список параметров для параметризованных тестовых случаев (с декоратором @pytest.mark.parametrize)
         if hasattr(item, 'callspec'):
-            # Получаем словарь параметров теста (например, {'url': 'http://...', 'user': 'admin'})
-            params = item.callspec.params
+            params = item.callspec.params  # Получаем словарь параметров теста (например, {'url': 'http://...', 'user': 'admin'})
 
-            # Сортируем ключи параметров по алфавиту для стабильного порядка отображения
-            res_keys = sorted([k for k in params])
-            # Создаём список строк вида 'key_"value"' для каждого параметра
-            res = ['{0}_"{1}"'.format(k, params[k]) for k in res_keys]
-            # Добавляем параметры к имени теста в формате: 'Название теста Parameters key1_"val1", key2_"val2"'
-            full_name += ' Parameters ' + str(', '.join(res))
-            # Убираем двоеточия из имени теста, чтобы избежать конфликтов с форматом отчёта
-            full_name = full_name.replace(':', '')
+            res_keys = sorted([k for k in params])  # Сортируем ключи параметров по алфавиту для стабильного порядка отображения
+            res = ['{0}_"{1}"'.format(k, params[k]) for k in res_keys]  # Создаём список строк вида 'key_"value"' для каждого параметра
+            full_name += ' Parameters ' + str(', '.join(res))  # Добавляем параметры к имени теста в формате: 'Название теста Parameters key1_"val1", key2_"val2"'
+            full_name = full_name.replace(':', '')  # Убираем двоеточия из имени теста, чтобы избежать конфликтов с форматом отчёта
 
     # Возвращаем сформированное полное имя теста с параметрами (или пустую строку, если docstring нет)
     return full_name
@@ -189,8 +157,7 @@ def pytest_itemcollected(item):
 
     # Если у тестовой функции есть docstring, заменяем стандартный идентификатор теста на docstring
     if item._obj.__doc__:
-        # Переопределяем _nodeid — внутренний идентификатор теста, отображаемый в отчётах и при запуске
-        item._nodeid = get_test_case_docstring(item)
+        item._nodeid = get_test_case_docstring(item)  # Переопределяем _nodeid — внутренний идентификатор теста, отображаемый в отчётах и при запуске
 
 
 # Хук pytest, вызываемый после завершения сбора всех тестов — используется для вывода списка тестов
@@ -208,10 +175,7 @@ def pytest_collection_finish(session):
             # эту строку документа для отображения удобочитаемых отчетов и для
             # автоматически импортировать тестовые случаи в систему управления тестированием.
             if item._obj.__doc__:
-                # Получаем отформатированное имя теста на основе docstring
-                full_name = get_test_case_docstring(item)
-                # Выводим имя теста в консоль — позволяет получить читаемый список всех тестов
-                print(full_name)
+                full_name = get_test_case_docstring(item)  # Получаем отформатированное имя теста на основе docstring
+                print(full_name)  # Выводим имя теста в консоль — позволяет получить читаемый список всех тестов
 
-        # Завершаем работу pytest сразу после вывода списка тестов — дальнейшее выполнение не требуется
-        pytest.exit('Done!')
+        pytest.exit('Done!')  # Завершаем работу pytest сразу после вывода списка тестов — дальнейшее выполнение не требуется

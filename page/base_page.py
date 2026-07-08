@@ -81,8 +81,7 @@ class WebPage(object): #базовый класс для всех страниц
         #Это переключает контекст браузера на модальное окно. Без этого нельзя работать с alert.
         #.accept() Нажимает кнопку "OK" (подтверждает),.dismiss() Нажимает кнопку "Cancel" (отклоняет)
         #accept() закрывает алерт и продолжает выполнение теста.
-        #Типы модальных окон в JavaScript: alert("Сообщение"),confirm("OK или Отмена?"),prompt("Введите текст:")
-        self._web_driver.switch_to.alert.accept()
+        self._web_driver.switch_to.alert.accept()  # Типы модальных окон в JavaScript: alert("Сообщение"),confirm("OK или Отмена?"),prompt("Введите текст:")
 
     def switch_to_window(self, window=0): #Переключается на вкладку по индексу (0 — первая)
         """ Переключитесь на вкладку по его индексу. """
@@ -165,15 +164,13 @@ class WebPage(object): #базовый класс для всех страниц
         if sleep_time:
             time.sleep(sleep_time) #Начальная задержка time.sleep(sleep_time)
 
-        # Получить исходный код страницы для отслеживания изменений в HTML:
-        source = ''
+        source = ''  # Получить исходный код страницы для отслеживания изменений в HTML:
         try:
             source = self._web_driver.page_source #апоминает исходный HTML
         except:
             pass
 
-        # Подождать, пока страница загрузится (и прокрутить ее, чтобы убедиться, что все объекты будут загружены):
-        while not page_loaded:
+        while not page_loaded:  # Подождать, пока страница загрузится (и прокрутить ее, чтобы убедиться, что все объекты будут загружены):
             time.sleep(0.5)
             k += 1
 
@@ -186,8 +183,7 @@ class WebPage(object): #базовый класс для всех страниц
                     pass
 
             if page_loaded and check_page_changes:
-                # Проверьть не изменился ли источник страницы
-                new_source = ''
+                new_source = ''  # Проверьть не изменился ли источник страницы
                 try:
                     new_source = self._web_driver.page_source
                 except:

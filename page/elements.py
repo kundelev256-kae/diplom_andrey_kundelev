@@ -193,8 +193,7 @@ class WebElement(object): #базовый класс для одного эле�
         # Добавьте красную рамку к стилю (border='3px solid red'):
         self._web_driver.execute_script("arguments[0].style.border='3px solid red'", element)
 
-        # Сделать скрин страницы:
-        self._web_driver.save_screenshot(file_name)
+        self._web_driver.save_screenshot(file_name)  # Сделать скрин страницы:
 
     def scroll_to_element(self):
         """ Прокрутка к элементу. """
@@ -298,5 +297,4 @@ class ManyWebElements(WebElement): #Дочерний класс для нахо�
             # Добавьте красную рамку к стилю:
             self._web_driver.execute_script("arguments[0].style.border='3px solid red'", element)
 
-        # Сделать скрин страницы:
-        self._web_driver.save_screenshot(file_name)
+        self._web_driver.save_screenshot(file_name)  # Сделать скрин страницы:

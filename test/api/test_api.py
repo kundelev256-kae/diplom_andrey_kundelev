@@ -41,163 +41,127 @@ class TestHttpStatuses:
     @allure.severity(allure.severity_level.BLOCKER)
     # Тест: проверяет, что главная страница возвращает HTTP 200
     def test_main_page_status(self, api):
-        # Отправляем GET-запрос на главную страницу через API-клиент
-        response = api.get(ENDPOINTS["main"])
-        # Утверждение: статус-код ответа должен быть 200 (OK)
-        assert response.status_code == 200
+        response = api.get(ENDPOINTS["main"])  # Отправляем GET-запрос на главную страницу через API-клиент
+        assert response.status_code == 200  # Утверждение: статус-код ответа должен быть 200 (OK)
 
     # Декоратор Allure: story — "Вакансии"
     @allure.story('Вакансии')
     # Тест: проверяет, что страница вакансий возвращает HTTP 200
     def test_vacancies_status(self, api):
-        # Отправляем GET-запрос на страницу вакансий
-        response = api.get(ENDPOINTS["vacancies"])
-        # Утверждение: статус-код должен быть 200
-        assert response.status_code == 200
+        response = api.get(ENDPOINTS["vacancies"])  # Отправляем GET-запрос на страницу вакансий
+        assert response.status_code == 200  # Утверждение: статус-код должен быть 200
 
     # Декоратор Allure: story — "Контакты"
     @allure.story('Контакты')
     # Тест: проверяет, что страница контактов возвращает HTTP 200
     def test_contacts_status(self, api):
-        # Отправляем GET-запрос на страницу контактов
-        response = api.get(ENDPOINTS["contacts"])
-        # Утверждение: статус-код должен быть 200
-        assert response.status_code == 200
+        response = api.get(ENDPOINTS["contacts"])  # Отправляем GET-запрос на страницу контактов
+        assert response.status_code == 200  # Утверждение: статус-код должен быть 200
 
     # Декоратор Allure: story — "Новости"
     @allure.story('Новости')
     # Тест: проверяет, что страница новостей возвращает HTTP 200
     def test_news_status(self, api):
-        # Отправляем GET-запрос на страницу новостей
-        response = api.get(ENDPOINTS["news"])
-        # Утверждение: статус-код должен быть 200
-        assert response.status_code == 200
+        response = api.get(ENDPOINTS["news"])  # Отправляем GET-запрос на страницу новостей
+        assert response.status_code == 200  # Утверждение: статус-код должен быть 200
 
     # Декоратор Allure: story — "Статьи"
     @allure.story('Статьи')
     # Тест: проверяет, что страница статей возвращает HTTP 200
     def test_articles_status(self, api):
-        # Отправляем GET-запрос на страницу статей
-        response = api.get(ENDPOINTS["articles"])
-        # Утверждение: статус-код должен быть 200
-        assert response.status_code == 200
+        response = api.get(ENDPOINTS["articles"])  # Отправляем GET-запрос на страницу статей
+        assert response.status_code == 200  # Утверждение: статус-код должен быть 200
 
     # Декоратор Allure: story — "Курс QA"
     @allure.story('Курс QA')
     # Тест: проверяет, что страница курса QA возвращает HTTP 200
     def test_qa_course_status(self, api):
-        # Отправляем GET-запрос на страницу курса QA
-        response = api.get(ENDPOINTS["qa_course"])
-        # Утверждение: статус-код должен быть 200
-        assert response.status_code == 200
+        response = api.get(ENDPOINTS["qa_course"])  # Отправляем GET-запрос на страницу курса QA
+        assert response.status_code == 200  # Утверждение: статус-код должен быть 200
 
     # Декоратор Allure: story — "Курс Python"
     @allure.story('Курс Python')
     # Тест: проверяет, что страница курса Python возвращает HTTP 200
     def test_python_course_status(self, api):
-        # Отправляем GET-запрос на страницу курса Python
-        response = api.get(ENDPOINTS["python_course"])
-        # Утверждение: статус-код должен быть 200
-        assert response.status_code == 200
+        response = api.get(ENDPOINTS["python_course"])  # Отправляем GET-запрос на страницу курса Python
+        assert response.status_code == 200  # Утверждение: статус-код должен быть 200
 
     # Декоратор Allure: story — "Курс Java"
     @allure.story('Курс Java')
     # Тест: проверяет, что страница курса Java возвращает HTTP 200
     def test_java_course_status(self, api):
-        # Отправляем GET-запрос на страницу курса Java
-        response = api.get(ENDPOINTS["java_course"])
-        # Утверждение: статус-код должен быть 200
-        assert response.status_code == 200
+        response = api.get(ENDPOINTS["java_course"])  # Отправляем GET-запрос на страницу курса Java
+        assert response.status_code == 200  # Утверждение: статус-код должен быть 200
 
     # Декоратор Allure: story — "Курс UX/UI"
     @allure.story('Курс UX/UI')
     # Тест: проверяет, что страница курса UX/UI возвращает HTTP 200
     def test_ux_ui_course_status(self, api):
-        # Отправляем GET-запрос на страницу курса UX/UI
-        response = api.get(ENDPOINTS["ux_ui_course"])
-        # Утверждение: статус-код должен быть 200
-        assert response.status_code == 200
+        response = api.get(ENDPOINTS["ux_ui_course"])  # Отправляем GET-запрос на страницу курса UX/UI
+        assert response.status_code == 200  # Утверждение: статус-код должен быть 200
 
     # Декоратор Allure: story — "Data Analyst"
     @allure.story('Data Analyst')
     # Тест: проверяет, что страница курса Data Analyst возвращает HTTP 200
     def test_data_analyst_status(self, api):
-        # Отправляем GET-запрос на страницу курса Data Analyst
-        response = api.get(ENDPOINTS["data_analyst"])
-        # Утверждение: статус-код должен быть 200
-        assert response.status_code == 200
+        response = api.get(ENDPOINTS["data_analyst"])  # Отправляем GET-запрос на страницу курса Data Analyst
+        assert response.status_code == 200  # Утверждение: статус-код должен быть 200
 
     # Декоратор Allure: story — "Курс PM"
     @allure.story('Курс PM')
     # Тест: проверяет, что страница курса PM возвращает HTTP 200
     def test_pm_course_status(self, api):
-        # Отправляем GET-запрос на страницу курса PM
-        response = api.get(ENDPOINTS["pm_course"])
-        # Утверждение: статус-код должен быть 200
-        assert response.status_code == 200
+        response = api.get(ENDPOINTS["pm_course"])  # Отправляем GET-запрос на страницу курса PM
+        assert response.status_code == 200  # Утверждение: статус-код должен быть 200
 
     # Декоратор Allure: story — "DevOps"
     @allure.story('DevOps')
     # Тест: проверяет, что страница курса DevOps возвращает HTTP 200
     def test_devops_status(self, api):
-        # Отправляем GET-запрос на страницу курса DevOps
-        response = api.get(ENDPOINTS["devops"])
-        # Утверждение: статус-код должен быть 200
-        assert response.status_code == 200
+        response = api.get(ENDPOINTS["devops"])  # Отправляем GET-запрос на страницу курса DevOps
+        assert response.status_code == 200  # Утверждение: статус-код должен быть 200
 
     # Декоратор Allure: story — "IT Start"
     @allure.story('IT Start')
     # Тест: проверяет, что страница IT Start возвращает HTTP 200
     def test_it_start_status(self, api):
-        # Отправляем GET-запрос на страницу IT Start
-        response = api.get(ENDPOINTS["it_start"])
-        # Утверждение: статус-код должен быть 200
-        assert response.status_code == 200
+        response = api.get(ENDPOINTS["it_start"])  # Отправляем GET-запрос на страницу IT Start
+        assert response.status_code == 200  # Утверждение: статус-код должен быть 200
 
     # Декоратор Allure: story — "Карьерный тест"
     @allure.story('Карьерный тест')
     # Тест: проверяет, что страница карьерного теста возвращает HTTP 200
     def test_career_test_status(self, api):
-        # Отправляем GET-запрос на страницу карьерного теста
-        response = api.get(ENDPOINTS["career_test"])
-        # Утверждение: статус-код должен быть 200
-        assert response.status_code == 200
+        response = api.get(ENDPOINTS["career_test"])  # Отправляем GET-запрос на страницу карьерного теста
+        assert response.status_code == 200  # Утверждение: статус-код должен быть 200
 
     # Декоратор Allure: story — "Программы для детей 7-8"
     @allure.story('Программы для детей 7-8')
     # Тест: проверяет, что страница программы для детей 7-8 лет возвращает HTTP 200
     def test_kids_7_8_status(self, api):
-        # Отправляем GET-запрос на страницу программы для детей 7-8 лет
-        response = api.get(ENDPOINTS["kids_7_8"])
-        # Утверждение: статус-код должен быть 200
-        assert response.status_code == 200
+        response = api.get(ENDPOINTS["kids_7_8"])  # Отправляем GET-запрос на страницу программы для детей 7-8 лет
+        assert response.status_code == 200  # Утверждение: статус-код должен быть 200
 
     # Декоратор Allure: story — "Программы для детей 9-11"
     @allure.story('Программы для детей 9-11')
     # Тест: проверяет, что страница программы для детей 9-11 лет возвращает HTTP 200
     def test_kids_9_11_status(self, api):
-        # Отправляем GET-запрос на страницу программы для детей 9-11 лет
-        response = api.get(ENDPOINTS["kids_9_11"])
-        # Утверждение: статус-код должен быть 200
-        assert response.status_code == 200
+        response = api.get(ENDPOINTS["kids_9_11"])  # Отправляем GET-запрос на страницу программы для детей 9-11 лет
+        assert response.status_code == 200  # Утверждение: статус-код должен быть 200
 
     # Декоратор Allure: story — "Программы для детей 12-13"
     @allure.story('Программы для детей 12-13')
     # Тест: проверяет, что страница программы для детей 12-13 лет возвращает HTTP 200
     def test_kids_12_13_status(self, api):
-        # Отправляем GET-запрос на страницу программы для детей 12-13 лет
-        response = api.get(ENDPOINTS["kids_12_13"])
-        # Утверждение: статус-код должен быть 200
-        assert response.status_code == 200
+        response = api.get(ENDPOINTS["kids_12_13"])  # Отправляем GET-запрос на страницу программы для детей 12-13 лет
+        assert response.status_code == 200  # Утверждение: статус-код должен быть 200
 
     # Декоратор Allure: story — "Английский язык"
     @allure.story('Английский язык')
     # Тест: проверяет, что страница английского языка возвращает HTTP 200
     def test_english_status(self, api):
-        # Отправляем GET-запрос на страницу английского языка
-        response = api.get(ENDPOINTS["english"])
-        # Утверждение: статус-код должен быть 200
-        assert response.status_code == 200
+        response = api.get(ENDPOINTS["english"])  # Отправляем GET-запрос на страницу английского языка
+        assert response.status_code == 200  # Утверждение: статус-код должен быть 200
 
 
 # ──────────────────────────────────────────────
@@ -217,8 +181,7 @@ class TestResponseTime:
     @allure.severity(allure.severity_level.CRITICAL)
     # Тест: проверяет, что главная страница загружается быстрее MAX_RESPONSE_TIME
     def test_main_page_response_time(self, api):
-        # Отправляем GET-запрос на главную страницу
-        response = api.get(ENDPOINTS["main"])
+        response = api.get(ENDPOINTS["main"])  # Отправляем GET-запрос на главную страницу
         # Утверждение: время загрузки (response.elapsed) должно быть меньше лимита из конфига
         assert response.elapsed.total_seconds() < MAX_RESPONSE_TIME, \
             f"Главная страница загружается {response.elapsed.total_seconds():.2f}с (лимит {MAX_RESPONSE_TIME}с)"
@@ -232,10 +195,8 @@ class TestResponseTime:
     ])
     # Тест: проверяет, что каждая страница загружается быстрее MAX_RESPONSE_TIME
     def test_all_pages_response_time(self, api, name, path):
-        # Отправляем GET-запрос на текущую страницу из параметризации
-        response = api.get(path)
-        # Получаем время загрузки в секундах
-        elapsed = response.elapsed.total_seconds()
+        response = api.get(path)  # Отправляем GET-запрос на текущую страницу из параметризации
+        elapsed = response.elapsed.total_seconds()  # Получаем время загрузки в секундах
         # Утверждение: время загрузки должно быть меньше лимита
         assert elapsed < MAX_RESPONSE_TIME, \
             f"{name} загружается {elapsed:.2f}с (лимит {MAX_RESPONSE_TIME}с)"
@@ -256,8 +217,7 @@ class TestHeaders:
     @allure.story('Content-Type главной страницы')
     # Тест: проверяет, что главная страница возвращает Content-Type с text/html
     def test_main_page_content_type(self, api):
-        # Отправляем GET-запрос на главную страницу
-        response = api.get(ENDPOINTS["main"])
+        response = api.get(ENDPOINTS["main"])  # Отправляем GET-запрос на главную страницу
         # Утверждение: заголовок Content-Type должен содержать "text/html"
         assert "text/html" in response.headers.get("Content-Type", "")
 
@@ -265,12 +225,10 @@ class TestHeaders:
     @allure.story('Наличие security-заголовков')
     # Тест: проверяет, что ответ содержит хотя бы один security-заголовок
     def test_security_headers_present(self, api):
-        # Отправляем GET-запрос на главную страницу
-        response = api.get(ENDPOINTS["main"])
+        response = api.get(ENDPOINTS["main"])  # Отправляем GET-запрос на главную страницу
         # Преобразуем заголовки в нижний регистр для регистронезависимого сравнения
         headers = {k.lower(): v for k, v in response.headers.items()}
-        # Проверяем наличие хотя бы одного из security-заголовков
-        has_security = any(h in headers for h in [
+        has_security = any(h in headers for h in [  # Проверяем наличие хотя бы одного из security-заголовков
             "x-frame-options", "content-security-policy",
             "x-content-type-options", "strict-transport-security"
         ])
@@ -281,8 +239,7 @@ class TestHeaders:
     @allure.story('Заголовки ответа содержат сервер')
     # Тест: проверяет, что ответ содержит заголовок Server
     def test_server_header(self, api):
-        # Отправляем GET-запрос на главную страницу
-        response = api.get(ENDPOINTS["main"])
+        response = api.get(ENDPOINTS["main"])  # Отправляем GET-запрос на главную страницу
         # Утверждение: заголовок Server должен присутствовать (в любом регистре)
         assert "Server" in response.headers or "server" in {k.lower(): v for k, v in response.headers.items()}
 
@@ -295,8 +252,7 @@ class TestHeaders:
     ])
     # Тест: проверяет, что каждая страница возвращает Content-Type с text/html
     def test_content_type_all_pages(self, api, name, path):
-        # Отправляем GET-запрос на текущую страницу из параметризации
-        response = api.get(path)
+        response = api.get(path)  # Отправляем GET-запрос на текущую страницу из параметризации
         # Утверждение: Content-Type должен содержать "text/html"
         assert "text/html" in response.headers.get("Content-Type", ""), \
             f"{name}: Content-Type не text/html ({response.headers.get('Content-Type')})"
@@ -317,46 +273,36 @@ class TestRobotsAndSitemap:
     @allure.story('robots.txt доступен')
     # Тест: проверяет, что файл robots.txt доступен (HTTP 200)
     def test_robots_txt_status(self, api):
-        # Отправляем GET-запрос на robots.txt
-        response = api.get(ENDPOINTS["robots_txt"])
-        # Утверждение: статус-код должен быть 200 (файл найден и доступен)
-        assert response.status_code == 200
+        response = api.get(ENDPOINTS["robots_txt"])  # Отправляем GET-запрос на robots.txt
+        assert response.status_code == 200  # Утверждение: статус-код должен быть 200 (файл найден и доступен)
 
     # Декоратор Allure: story — "robots.txt содержит User-agent"
     @allure.story('robots.txt содержит User-agent')
     # Тест: проверяет, что robots.txt содержит директиву User-agent
     def test_robots_txt_content(self, api):
-        # Отправляем GET-запрос на robots.txt
-        response = api.get(ENDPOINTS["robots_txt"])
-        # Утверждение: текст ответа должен содержать "User-agent"
-        assert "User-agent" in response.text
+        response = api.get(ENDPOINTS["robots_txt"])  # Отправляем GET-запрос на robots.txt
+        assert "User-agent" in response.text  # Утверждение: текст ответа должен содержать "User-agent"
 
     # Декоратор Allure: story — "robots.txt ссылается на sitemap"
     @allure.story('robots.txt ссылается на sitemap')
     # Тест: проверяет, что robots.txt содержит ссылку на sitemap
     def test_robots_txt_has_sitemap(self, api):
-        # Отправляем GET-запрос на robots.txt
-        response = api.get(ENDPOINTS["robots_txt"])
-        # Утверждение: текст ответа должен содержать "Sitemap"
-        assert "Sitemap" in response.text
+        response = api.get(ENDPOINTS["robots_txt"])  # Отправляем GET-запрос на robots.txt
+        assert "Sitemap" in response.text  # Утверждение: текст ответа должен содержать "Sitemap"
 
     # Декоратор Allure: story — "sitemap.xml доступен"
     @allure.story('sitemap.xml доступен')
     # Тест: проверяет, что файл sitemap.xml доступен (HTTP 200)
     def test_sitemap_status(self, api):
-        # Отправляем GET-запрос на sitemap.xml
-        response = api.get(ENDPOINTS["sitemap"])
-        # Утверждение: статус-код должен быть 200
-        assert response.status_code == 200
+        response = api.get(ENDPOINTS["sitemap"])  # Отправляем GET-запрос на sitemap.xml
+        assert response.status_code == 200  # Утверждение: статус-код должен быть 200
 
     # Декоратор Allure: story — "sitemap.xml содержит URL"
     @allure.story('sitemap.xml содержит URL')
     # Тест: проверяет, что sitemap.xml содержит теги URL или sitemapindex
     def test_sitemap_content(self, api):
-        # Отправляем GET-запрос на sitemap.xml
-        response = api.get(ENDPOINTS["sitemap"])
-        # Сохраняем текст ответа
-        text = response.text
+        response = api.get(ENDPOINTS["sitemap"])  # Отправляем GET-запрос на sitemap.xml
+        text = response.text  # Сохраняем текст ответа
         # Утверждение: текст должен содержать теги <url>, <urlset>, <sitemapindex> или <sitemap>
         assert "<url>" in text or "<urlset" in text or "<sitemapindex" in text or "<sitemap>" in text, \
             "sitemap.xml не содержит тегов <url> или <sitemapindex>"
@@ -377,60 +323,45 @@ class TestSSL:
     @allure.story('SSL-сертификат валиден')
     # Тест: проверяет, что SSL-сертификат сервера itstep.by валиден и может быть получен
     def test_ssl_certificate_valid(self):
-        # Имя проверяемого хоста
-        hostname = "itstep.by"
-        # Создаём SSL-контекст с настройками по умолчанию (проверка цепочки сертификатов)
-        context = ssl.create_default_context()
+        hostname = "itstep.by"  # Имя проверяемого хоста
+        context = ssl.create_default_context()  # Создаём SSL-контекст с настройками по умолчанию (проверка цепочки сертификатов)
         # Устанавливаем TCP-соединение с сервером на порт 443 (HTTPS) с таймаутом 10 секунд
         with socket.create_connection((hostname, 443), timeout=10) as sock:
             # Оборачиваем TCP-соединение в SSL (TLS) с проверкой имени хоста
             with context.wrap_socket(sock, server_hostname=hostname) as ssock:
-                # Получаем сертификат сервера (в виде словаря)
-                cert = ssock.getpeercert()
-                # Утверждение: сертификат должен быть получен (не None)
-                assert cert is not None, "Сертификат не получен"
+                cert = ssock.getpeercert()  # Получаем сертификат сервера (в виде словаря)
+                assert cert is not None, "Сертификат не получен"  # Утверждение: сертификат должен быть получен (не None)
 
     # Декоратор Allure: story — "SSL-сертификат не просрочен"
     @allure.story('SSL-сертификат не просрочен')
     # Тест: проверяет, что SSL-сертификат не истёк (дата окончания > текущего времени)
     def test_ssl_certificate_not_expired(self):
-        # Имя проверяемого хоста
-        hostname = "itstep.by"
-        # Создаём SSL-контекст с настройками по умолчанию
-        context = ssl.create_default_context()
+        hostname = "itstep.by"  # Имя проверяемого хоста
+        context = ssl.create_default_context()  # Создаём SSL-контекст с настройками по умолчанию
         # Устанавливаем TCP-соединение с сервером на порт 443
         with socket.create_connection((hostname, 443), timeout=10) as sock:
             # Оборачиваем соединение в SSL
             with context.wrap_socket(sock, server_hostname=hostname) as ssock:
-                # Получаем сертификат сервера
-                cert = ssock.getpeercert()
-                # Преобразуем дату окончания сертификата в секунды (timestamp)
-                not_after = ssl.cert_time_to_seconds(cert["notAfter"])
-                # Утверждение: дата окончания должна быть больше текущего времени
-                assert not_after > time.time(), "SSL-сертификат просрочен"
+                cert = ssock.getpeercert()  # Получаем сертификат сервера
+                not_after = ssl.cert_time_to_seconds(cert["notAfter"])  # Преобразуем дату окончания сертификата в секунды (timestamp)
+                assert not_after > time.time(), "SSL-сертификат просрочен"  # Утверждение: дата окончания должна быть больше текущего времени
 
     # Декоратор Allure: story — "SSL-сертификат выдан для правильного домена"
     @allure.story('SSL-сертификат выдан для правильного домена')
     # Тест: проверяет, что сертификат выдан для домена itstep.by
     def test_ssl_certificate_domain(self):
-        # Имя проверяемого хоста
-        hostname = "itstep.by"
-        # Создаём SSL-контекст
-        context = ssl.create_default_context()
+        hostname = "itstep.by"  # Имя проверяемого хоста
+        context = ssl.create_default_context()  # Создаём SSL-контекст
         # Устанавливаем TCP-соединение
         with socket.create_connection((hostname, 443), timeout=10) as sock:
             # Оборачиваем в SSL
             with context.wrap_socket(sock, server_hostname=hostname) as ssock:
-                # Получаем сертификат
-                cert = ssock.getpeercert()
-                # Извлекаем поле Subject (содержит Common Name)
-                subject = dict(x[0] for x in cert.get("subject", ()))
-                # Получаем Common Name (CN) из сертификата
-                cn = subject.get("commonName", "")
+                cert = ssock.getpeercert()  # Получаем сертификат
+                subject = dict(x[0] for x in cert.get("subject", ()))  # Извлекаем поле Subject (содержит Common Name)
+                cn = subject.get("commonName", "")  # Получаем Common Name (CN) из сертификата
                 # Получаем все альтернативные имена (SAN) с типом DNS
                 alt_names = [v for t, v in cert.get("subjectAltName", ()) if t == "DNS"]
-                # Объединяем CN и SAN в один список
-                all_names = [cn] + alt_names
+                all_names = [cn] + alt_names  # Объединяем CN и SAN в один список
                 # Утверждение: hostname должен быть среди имён в сертификате
                 assert any(hostname in name for name in all_names), \
                     f"Сертификат не содержит {hostname}: {all_names}"
@@ -451,8 +382,7 @@ class TestPageContent:
     @allure.story('Главная страница содержит заголовок')
     # Тест: проверяет, что главная страница содержит тег <title> или упоминание "ит шаг"
     def test_main_page_has_title(self, api):
-        # Отправляем GET-запрос на главную страницу
-        response = api.get(ENDPOINTS["main"])
+        response = api.get(ENDPOINTS["main"])  # Отправляем GET-запрос на главную страницу
         # Утверждение: текст должен содержать <title> или "ит шаг"
         assert "<title>" in response.text.lower() or "ит шаг" in response.text.lower()
 
@@ -460,10 +390,8 @@ class TestPageContent:
     @allure.story('Страница контактов содержит контакты')
     # Тест: проверяет, что страница контактов содержит контактную информацию
     def test_contacts_page_content(self, api):
-        # Отправляем GET-запрос на страницу контактов
-        response = api.get(ENDPOINTS["contacts"])
-        # Приводим текст к нижнему регистру для регистронезависимого поиска
-        text = response.text.lower()
+        response = api.get(ENDPOINTS["contacts"])  # Отправляем GET-запрос на страницу контактов
+        text = response.text.lower()  # Приводим текст к нижнему регистру для регистронезависимого поиска
         # Утверждение: текст должен содержать одно из ключевых слов
         assert "контакт" in text or "телефон" in text or "адрес" in text
 
@@ -471,10 +399,8 @@ class TestPageContent:
     @allure.story('Страница вакансий содержит вакансии')
     # Тест: проверяет, что страница вакансий содержит информацию о вакансиях
     def test_vacancies_page_content(self, api):
-        # Отправляем GET-запрос на страницу вакансий
-        response = api.get(ENDPOINTS["vacancies"])
-        # Приводим текст к нижнему регистру
-        text = response.text.lower()
+        response = api.get(ENDPOINTS["vacancies"])  # Отправляем GET-запрос на страницу вакансий
+        text = response.text.lower()  # Приводим текст к нижнему регистру
         # Утверждение: текст должен содержать одно из ключевых слов
         assert "вакан" in text or "career" in text or "работ" in text
 
@@ -482,10 +408,8 @@ class TestPageContent:
     @allure.story('Страница новостей содержит новости')
     # Тест: проверяет, что страница новостей содержит новостной контент
     def test_news_page_content(self, api):
-        # Отправляем GET-запрос на страницу новостей
-        response = api.get(ENDPOINTS["news"])
-        # Приводим текст к нижнему регистру
-        text = response.text.lower()
+        response = api.get(ENDPOINTS["news"])  # Отправляем GET-запрос на страницу новостей
+        text = response.text.lower()  # Приводим текст к нижнему регистру
         # Утверждение: текст должен содержать одно из ключевых слов
         assert "новост" in text or "news" in text or "мероприят" in text
 
@@ -493,12 +417,9 @@ class TestPageContent:
     @allure.story('Страница курса QA содержит информацию о курсе')
     # Тест: проверяет, что страница курса QA содержит релевантную информацию
     def test_qa_course_content(self, api):
-        # Отправляем GET-запрос на страницу курса QA
-        response = api.get(ENDPOINTS["qa_course"])
-        # Приводим текст к нижнему регистру
-        text = response.text.lower()
-        # Утверждение: текст должен содержать "qa" или "тестир"
-        assert "qa" in text or "тестир" in text
+        response = api.get(ENDPOINTS["qa_course"])  # Отправляем GET-запрос на страницу курса QA
+        text = response.text.lower()  # Приводим текст к нижнему регистру
+        assert "qa" in text or "тестир" in text  # Утверждение: текст должен содержать "qa" или "тестир"
 
     # Декоратор Allure: story — "Все страницы содержат ссылку на главную"
     @allure.story('Все страницы содержат ссылку на главную')
@@ -509,8 +430,7 @@ class TestPageContent:
     ])
     # Тест: проверяет, что каждая страница содержит ссылку на главную
     def test_all_pages_have_main_link(self, api, name, path):
-        # Отправляем GET-запрос на текущую страницу
-        response = api.get(path)
+        response = api.get(path)  # Отправляем GET-запрос на текущую страницу
         # Утверждение: страница должна содержать ссылку на корень сайта
         assert 'href="/"' in response.text or "href='/'" in response.text or \
                "itstep.by" in response.text.lower(), \
@@ -536,34 +456,28 @@ class TestPositivePostRequests:
     def test_post_json_to_main(self, api):
         # Формируем тело запроса в формате JSON (имитация отправки формы)
         json_data = {"name": "Тест Тестов", "email": "test@example.com", "message": "Тестовое сообщение"}
-        # Отправляем POST-запрос с JSON-данными на главную страницу
-        response = api.post(ENDPOINTS["main"], json=json_data)
-        # Утверждение: статус-код должен быть 200 (OK)
-        assert response.status_code == 200
+        response = api.post(ENDPOINTS["main"], json=json_data)  # Отправляем POST-запрос с JSON-данными на главную страницу
+        assert response.status_code == 200  # Утверждение: статус-код должен быть 200 (OK)
 
     # Декоратор Allure: story — "POST с JSON на страницу курса QA"
     @allure.story('POST с JSON на страницу курса QA')
     # Тест: проверяет, что POST с заявкой на курс QA возвращает 200
     def test_post_json_to_qa_course(self, api):
-        # Формируем JSON с заявкой на курс QA
-        json_data = {
+        json_data = {  # Формируем JSON с заявкой на курс QA
             "name": "Петр Петров",
             "email": "petr@example.com",
             "phone": "+375297654321",
             "course": "qa",
             "utm_source": "organic"
         }
-        # Отправляем POST-запрос с JSON на страницу курса QA
-        response = api.post(ENDPOINTS["qa_course"], json=json_data)
-        # Утверждение: статус-код должен быть 200 (OK)
-        assert response.status_code == 200
+        response = api.post(ENDPOINTS["qa_course"], json=json_data)  # Отправляем POST-запрос с JSON на страницу курса QA
+        assert response.status_code == 200  # Утверждение: статус-код должен быть 200 (OK)
 
     # Декоратор Allure: story — "POST с JSON на страницу курса Python"
     @allure.story('POST с JSON на страницу курса Python')
     # Тест: проверяет, что POST с заявкой на курс Python возвращает 200
     def test_post_json_to_python_course(self, api):
-        # Формируем JSON с заявкой на курс Python
-        json_data = {
+        json_data = {  # Формируем JSON с заявкой на курс Python
             "name": "Анна Сидорова",
             "email": "anna@example.com",
             "phone": "+375299876543",
@@ -571,15 +485,13 @@ class TestPositivePostRequests:
         }
         # Отправляем POST-запрос с JSON на страницу курса Python
         response = api.post(ENDPOINTS["python_course"], json=json_data)
-        # Утверждение: статус-код должен быть 200 (OK)
-        assert response.status_code == 200
+        assert response.status_code == 200  # Утверждение: статус-код должен быть 200 (OK)
 
     # Декоратор Allure: story — "POST с JSON на страницу курса Java"
     @allure.story('POST с JSON на страницу курса Java')
     # Тест: проверяет, что POST с заявкой на курс Java возвращает 200
     def test_post_json_to_java_course(self, api):
-        # Формируем JSON с заявкой на курс Java
-        json_data = {
+        json_data = {  # Формируем JSON с заявкой на курс Java
             "name": "Сергей Козлов",
             "email": "sergey@example.com",
             "phone": "+375291112233",
@@ -587,38 +499,32 @@ class TestPositivePostRequests:
         }
         # Отправляем POST-запрос с JSON на страницу курса Java
         response = api.post(ENDPOINTS["java_course"], json=json_data)
-        # Утверждение: статус-код должен быть 200 (OK)
-        assert response.status_code == 200
+        assert response.status_code == 200  # Утверждение: статус-код должен быть 200 (OK)
 
     # Декоратор Allure: story — "POST с JSON на карьерный тест"
     @allure.story('POST с JSON на карьерный тест')
     # Тест: проверяет, что POST с результатами карьерного теста возвращает 200
     def test_post_json_to_career_test(self, api):
-        # Формируем JSON с ответами на карьерный тест
-        json_data = {
+        json_data = {  # Формируем JSON с ответами на карьерный тест
             "answers": [1, 2, 3, 1, 2],
             "email": "career@example.com"
         }
         # Отправляем POST-запрос на страницу карьерного теста
         response = api.post(ENDPOINTS["career_test"], json=json_data)
-        # Утверждение: статус-код должен быть 200 (OK)
-        assert response.status_code == 200
+        assert response.status_code == 200  # Утверждение: статус-код должен быть 200 (OK)
 
     # Декоратор Allure: story — "POST с пустым JSON"
     @allure.story('POST с пустым JSON')
     # Тест: проверяет, что POST с пустым JSON-объектом возвращает 200
     def test_post_empty_json(self, api):
-        # Отправляем POST-запрос с пустым JSON-объектом
-        response = api.post(ENDPOINTS["main"], json={})
-        # Утверждение: статус-код должен быть 200 (OK)
-        assert response.status_code == 200
+        response = api.post(ENDPOINTS["main"], json={})  # Отправляем POST-запрос с пустым JSON-объектом
+        assert response.status_code == 200  # Утверждение: статус-код должен быть 200 (OK)
 
     # Декоратор Allure: story — "POST с JSON на страницу UX/UI"
     @allure.story('POST с JSON на страницу UX/UI')
     # Тест: проверяет, что POST с заявкой на курс UX/UI возвращает 200
     def test_post_json_to_ux_ui_course(self, api):
-        # Формируем JSON с заявкой на курс UX/UI
-        json_data = {
+        json_data = {  # Формируем JSON с заявкой на курс UX/UI
             "name": "Мария Волкова",
             "email": "maria@example.com",
             "phone": "+375294445566",
@@ -626,78 +532,64 @@ class TestPositivePostRequests:
         }
         # Отправляем POST-запрос с JSON на страницу курса UX/UI
         response = api.post(ENDPOINTS["ux_ui_course"], json=json_data)
-        # Утверждение: статус-код должен быть 200 (OK)
-        assert response.status_code == 200
+        assert response.status_code == 200  # Утверждение: статус-код должен быть 200 (OK)
 
     # Декоратор Allure: story — "POST с JSON на страницу DevOps"
     @allure.story('POST с JSON на страницу DevOps')
     # Тест: проверяет, что POST с заявкой на курс DevOps возвращает 200
     def test_post_json_to_devops(self, api):
-        # Формируем JSON с заявкой на курс DevOps
-        json_data = {
+        json_data = {  # Формируем JSON с заявкой на курс DevOps
             "name": "Алексей Новиков",
             "email": "alexey@example.com",
             "phone": "+375297778899",
             "course": "devops"
         }
-        # Отправляем POST-запрос с JSON на страницу курса DevOps
-        response = api.post(ENDPOINTS["devops"], json=json_data)
-        # Утверждение: статус-код должен быть 200 (OK)
-        assert response.status_code == 200
+        response = api.post(ENDPOINTS["devops"], json=json_data)  # Отправляем POST-запрос с JSON на страницу курса DevOps
+        assert response.status_code == 200  # Утверждение: статус-код должен быть 200 (OK)
 
     # Декоратор Allure: story — "POST с JSON на страницу IT Start"
     @allure.story('POST с JSON на страницу IT Start')
     # Тест: проверяет, что POST с заявкой на программу IT Start возвращает 200
     def test_post_json_to_it_start(self, api):
-        # Формируем JSON с заявкой на программу IT Start
-        json_data = {
+        json_data = {  # Формируем JSON с заявкой на программу IT Start
             "name": "Дмитрий Смирнов",
             "email": "dmitry@example.com",
             "phone": "+375290001122",
             "program": "it_start",
             "age": 15
         }
-        # Отправляем POST-запрос с JSON на страницу IT Start
-        response = api.post(ENDPOINTS["it_start"], json=json_data)
-        # Утверждение: статус-код должен быть 200 (OK)
-        assert response.status_code == 200
+        response = api.post(ENDPOINTS["it_start"], json=json_data)  # Отправляем POST-запрос с JSON на страницу IT Start
+        assert response.status_code == 200  # Утверждение: статус-код должен быть 200 (OK)
 
     # Декоратор Allure: story — "POST с кириллицей в JSON"
     @allure.story('POST с кириллицей в JSON')
     # Тест: проверяет, что сервер корректно обрабатывает кириллические символы в JSON
     def test_post_cyrillic_json(self, api):
-        # Формируем JSON с кириллическими данными
-        json_data = {
+        json_data = {  # Формируем JSON с кириллическими данными
             "name": "Тест Тестович Тестов",
             "email": "кириллица@пример.рф",
             "message": "Привет! Это тестовое сообщение на русском языке с ё, ъ, ы"
         }
-        # Отправляем POST-запрос с кириллическим JSON
-        response = api.post(ENDPOINTS["contacts"], json=json_data)
-        # Утверждение: статус-код должен быть 200 (OK)
-        assert response.status_code == 200
+        response = api.post(ENDPOINTS["contacts"], json=json_data)  # Отправляем POST-запрос с кириллическим JSON
+        assert response.status_code == 200  # Утверждение: статус-код должен быть 200 (OK)
 
     # Декоратор Allure: story — "POST с длинными данными"
     @allure.story('POST с длинными данными')
     # Тест: проверяет, что сервер корректно обрабатывает длинные строки в форме
     def test_post_long_data(self, api):
-        # Формируем JSON с длинным сообщением (1000 символов)
-        json_data = {
+        json_data = {  # Формируем JSON с длинным сообщением (1000 символов)
             "name": "Тест",
             "email": "long@example.com",
             "message": "А" * 1000
         }
-        # Отправляем POST-запрос с длинными данными
-        response = api.post(ENDPOINTS["contacts"], json=json_data)
-        # Утверждение: статус-код должен быть 200 (OK)
-        assert response.status_code == 200
+        response = api.post(ENDPOINTS["contacts"], json=json_data)  # Отправляем POST-запрос с длинными данными
+        assert response.status_code == 200  # Утверждение: статус-код должен быть 200 (OK)
 
     # Декоратор Allure: story — "POST с JSON на страницу Data Analyst"
     @allure.story('POST с JSON на страницу Data Analyst')
     # Тест: проверяет, что POST с заявкой на курс Data Analyst возвращает 200
     def test_post_json_to_data_analyst(self, api):
-        # Формируем JSON с заявкой на курс Data Analyst
-        json_data = {
+        json_data = {  # Формируем JSON с заявкой на курс Data Analyst
             "name": "Елена Кузнецова",
             "email": "elena@example.com",
             "phone": "+375293334455",
@@ -705,8 +597,7 @@ class TestPositivePostRequests:
         }
         # Отправляем POST-запрос с JSON на страницу курса Data Analyst
         response = api.post(ENDPOINTS["data_analyst"], json=json_data)
-        # Утверждение: статус-код должен быть 200 (OK)
-        assert response.status_code == 200
+        assert response.status_code == 200  # Утверждение: статус-код должен быть 200 (OK)
 
 
 # ──────────────────────────────────────────────
@@ -724,28 +615,22 @@ class TestHttpMethods:
     @allure.story('HEAD-запрос главной страницы')
     # Тест: проверяет, что HEAD-запрос на главную страницу возвращает 200
     def test_head_main_page(self, api):
-        # Отправляем HEAD-запрос на главную страницу
-        response = api.head(ENDPOINTS["main"])
-        # Утверждение: статус-код должен быть 200
-        assert response.status_code == 200
+        response = api.head(ENDPOINTS["main"])  # Отправляем HEAD-запрос на главную страницу
+        assert response.status_code == 200  # Утверждение: статус-код должен быть 200
 
     # Декоратор Allure: story — "HEAD возвращает Content-Type"
     @allure.story('HEAD возвращает Content-Type')
     # Тест: проверяет, что HEAD-запрос возвращает заголовок Content-Type
     def test_head_content_type(self, api):
-        # Отправляем HEAD-запрос на главную страницу
-        response = api.head(ENDPOINTS["main"])
-        # Утверждение: заголовок Content-Type должен присутствовать
-        assert "Content-Type" in response.headers
+        response = api.head(ENDPOINTS["main"])  # Отправляем HEAD-запрос на главную страницу
+        assert "Content-Type" in response.headers  # Утверждение: заголовок Content-Type должен присутствовать
 
     # Декоратор Allure: story — "HEAD не возвращает тело"
     @allure.story('HEAD не возвращает тело')
     # Тест: проверяет, что HEAD-запрос не возвращает тело ответа
     def test_head_no_body(self, api):
-        # Отправляем HEAD-запрос на главную страницу
-        response = api.head(ENDPOINTS["main"])
-        # Утверждение: длина тела ответа должна быть 0
-        assert len(response.content) == 0
+        response = api.head(ENDPOINTS["main"])  # Отправляем HEAD-запрос на главную страницу
+        assert len(response.content) == 0  # Утверждение: длина тела ответа должна быть 0
 
     # Декоратор Allure: story — "HEAD для всех основных страниц"
     @allure.story('HEAD для всех основных страниц')
@@ -756,8 +641,7 @@ class TestHttpMethods:
     ])
     # Тест: проверяет, что HEAD-запрос возвращает 200 для каждой страницы
     def test_head_all_pages(self, api, name, path):
-        # Отправляем HEAD-запрос на текущую страницу
-        response = api.head(path)
+        response = api.head(path)  # Отправляем HEAD-запрос на текущую страницу
         # Утверждение: статус должен быть 200
         assert response.status_code == 200, f"HEAD {name} вернул {response.status_code}"
 
@@ -777,12 +661,10 @@ class TestCaching:
     @allure.story('Заголовки кеширования главной страницы')
     # Тест: проверяет, что главная страница содержит заголовки кеширования или сжатия
     def test_cache_headers(self, api):
-        # Отправляем GET-запрос на главную страницу
-        response = api.get(ENDPOINTS["main"])
+        response = api.get(ENDPOINTS["main"])  # Отправляем GET-запрос на главную страницу
         # Преобразуем заголовки в нижний регистр
         headers = {k.lower(): v for k, v in response.headers.items()}
-        # Проверяем наличие хотя бы одного из заголовков кеширования/сжатия
-        has_cache = any(h in headers for h in [
+        has_cache = any(h in headers for h in [  # Проверяем наличие хотя бы одного из заголовков кеширования/сжатия
             "cache-control", "etag", "last-modified",
             "expires", "vary", "content-encoding"
         ])
@@ -793,14 +675,10 @@ class TestCaching:
     @allure.story('Повторный запрос возвращает тот же ETag')
     # Тест: проверяет, что ETag не меняется между двумя запросами
     def test_etag_consistency(self, api):
-        # Отправляем первый GET-запрос
-        r1 = api.get(ENDPOINTS["main"])
-        # Отправляем второй GET-запрос
-        r2 = api.get(ENDPOINTS["main"])
-        # Получаем ETag из первого ответа
-        etag1 = r1.headers.get("ETag", "")
-        # Получаем ETag из второго ответа
-        etag2 = r2.headers.get("ETag", "")
+        r1 = api.get(ENDPOINTS["main"])  # Отправляем первый GET-запрос
+        r2 = api.get(ENDPOINTS["main"])  # Отправляем второй GET-запрос
+        etag1 = r1.headers.get("ETag", "")  # Получаем ETag из первого ответа
+        etag2 = r2.headers.get("ETag", "")  # Получаем ETag из второго ответа
         # Если ETag есть — проверяем, что он не изменился
         if etag1:
             assert etag1 == etag2, f"ETag изменился: {etag1} -> {etag2}"
@@ -821,21 +699,16 @@ class TestCookies:
     @allure.story('Ответ содержит cookie')
     # Тест: проверяет, что ответ сервера содержит cookie
     def test_cookies_present(self, api):
-        # Отправляем GET-запрос на главную страницу
-        response = api.get(ENDPOINTS["main"])
-        # Получаем cookie из ответа
-        cookies = response.cookies
-        # Утверждение: количество cookie должно быть >= 0 (проверяем, что объект существует)
-        assert len(cookies) >= 0
+        response = api.get(ENDPOINTS["main"])  # Отправляем GET-запрос на главную страницу
+        cookies = response.cookies  # Получаем cookie из ответа
+        assert len(cookies) >= 0  # Утверждение: количество cookie должно быть >= 0 (проверяем, что объект существует)
 
     # Декоратор Allure: story — "Cookie-согласие"
     @allure.story('Cookie-согласие')
     # Тест: проверяет, что на странице есть уведомление о cookie
     def test_cookie_consent(self, api):
-        # Отправляем GET-запрос на главную страницу
-        response = api.get(ENDPOINTS["main"])
-        # Приводим текст к нижнему регистру
-        text = response.text.lower()
+        response = api.get(ENDPOINTS["main"])  # Отправляем GET-запрос на главную страницу
+        text = response.text.lower()  # Приводим текст к нижнему регистру
         # Утверждение: текст должен содержать упоминание cookie или кнопку принятия
         assert "cookie" in text or "cookies" in text or "button-accept-cookies" in text
 
@@ -874,8 +747,7 @@ class TestInternalLinks:
     ])
     # Тест: проверяет, что каждая внутренняя ссылка возвращает HTTP 200
     def test_internal_link_accessible(self, api, path):
-        # Отправляем GET-запрос на текущий путь
-        response = api.get(path)
+        response = api.get(path)  # Отправляем GET-запрос на текущий путь
         # Утверждение: статус-код должен быть 200
         assert response.status_code == 200, \
             f"Внутренняя ссылка {path} вернула {response.status_code}"

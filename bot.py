@@ -36,8 +36,7 @@ report_server = None  # Ссылка на текущий экземпляр HTTP
 GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")  # Читается из переменной окружения GROQ_API_KEY
 GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"  # Endpoint для Groq Chat API
 
-# Локальные ответы бота на случай недоступности API нейросети
-OFFLINE_RESPONSES = {
+OFFLINE_RESPONSES = {  # Локальные ответы бота на случай недоступности API нейросети
     "привет": "Привет! Чем могу помочь?",  # Ответ на приветствие
     "как дела": "Отлично, спасибо! Как у тебя?",  # Ответ на вопрос о самочувствии
     "помощь": "Я могу ответить на вопросы. Просто напиши мне!",  # Ответ на запрос помощи
@@ -61,19 +60,16 @@ def query_ai(prompt: str, history: list = None) -> str:
             for h in history:
                 messages.append({"role": "user", "content": h["user"]})  # Сообщение пользователя
                 messages.append({"role": "assistant", "content": h["bot"]})  # Ответ бота
-        # Добавляем текущий вопрос пользователя
-        messages.append({"role": "user", "content": prompt})
+        messages.append({"role": "user", "content": prompt})  # Добавляем текущий вопрос пользователя
 
-        # Тело запроса к API
-        payload = {
+        payload = {  # Тело запроса к API
             "model": "llama3-8b-8192",  # Модель Llama 3 от Meta (8K контекст)
             "messages": messages,  # Список сообщений
             "max_tokens": 1024,  # Максимальное количество токенов в ответе
             "temperature": 0.7  # Случайность ответа (0 = детерминированный, 1 = максимальная)
         }
 
-        # Отправляем POST-запрос к Groq API
-        response = requests.post(
+        response = requests.post(  # Отправляем POST-запрос к Groq API
             GROQ_API_URL,  # URL API
             json=payload,  # Тело запроса в формате JSON
             headers={"Authorization": f"Bearer {GROQ_API_KEY}", "Content-Type": "application/json"},  # Авторизация
@@ -100,8 +96,7 @@ def _fallback_response(prompt: str) -> str:
     """Локальный ответ когда API недоступен.
     Ищет ключевое слово во вводе пользователя и возвращает соответствующий ответ.
     Если не найдено — возвращает общее сообщение об ошибке."""
-    # Приводим ввод к нижнему регистру и убираем знаки препинания
-    low = prompt.lower().strip().rstrip("?!.,")
+    low = prompt.lower().strip().rstrip("?!.,")  # Приводим ввод к нижнему регистру и убираем знаки препинания
 
     # Ищем совпадение с ключами в словаре локальных ответов
     for key, answer in OFFLINE_RESPONSES.items():
@@ -120,12 +115,10 @@ class ReportHandler(SimpleHTTPRequestHandler):
     """Обработчик HTTP-запросов для раздачи файлов отчёта.
     Наследует SimpleHTTPRequestHandler для раздачи静态 файлов."""
     def __init__(self, *args, directory=None, **kwargs):
-        # Передаём директорию с отчётом в родительский класс
-        super().__init__(*args, directory=directory, **kwargs)
+        super().__init__(*args, directory=directory, **kwargs)  # Передаём директорию с отчётом в родительский класс
 
     def log_message(self, format, *args):
-        # Подавляем вывод HTTP-логов в консоль (чтобы не засорять вывод)
-        pass
+        pass  # Подавляем вывод HTTP-логов в консоль (чтобы не засорять вывод)
 
 
 def start_report_server(report_path: str, port: int = REPORT_PORT):
@@ -139,8 +132,7 @@ def start_report_server(report_path: str, port: int = REPORT_PORT):
             pass  # Игнорируем ошибки при остановке
     # Создаём обработчик с указанной директорией
     handler = lambda *a, **kw: ReportHandler(*a, directory=report_path, **kw)
-    # Запускаем HTTP-сервер на 0.0.0.0 (все интерфейсы) с указанным портом
-    report_server = HTTPServer(("0.0.0.0", port), handler)
+    report_server = HTTPServer(("0.0.0.0", port), handler)  # Запускаем HTTP-сервер на 0.0.0.0 (все интерфейсы) с указанным портом
     # Запускаем сервер в фоновом демон-потоке (не блокирует основной поток)
     thread = threading.Thread(target=report_server.serve_forever, daemon=True)
     thread.start()
@@ -153,14 +145,12 @@ async def execute_command(cmd: str, update: Update, context: ContextTypes.DEFAUL
     Сохраняет процесс в user_data для возможности отмены.
     Возвращает объединённый stdout + stderr."""
     try:
-        # Создаём асинхронный subprocess для выполнения shell-команды
-        proc = await asyncio.create_subprocess_shell(
+        proc = await asyncio.create_subprocess_shell(  # Создаём асинхронный subprocess для выполнения shell-команды
             cmd,  # Команда для выполнения
             stdout=asyncio.subprocess.PIPE,  # Перехватываем stdout
             stderr=asyncio.subprocess.PIPE  # Перехватываем stderr
         )
-        # Сохраняем процесс в user_data, чтобы пользователь мог его остановить
-        context.user_data['running_process'] = proc
+        context.user_data['running_process'] = proc  # Сохраняем процесс в user_data, чтобы пользователь мог его остановить
         # Ждём завершения процесса с таймаутом
         stdout, stderr = await asyncio.wait_for(proc.communicate(), timeout)
         # Форматируем вывод: добавляем метки STDOUT и STDERR
@@ -175,8 +165,7 @@ async def execute_command(cmd: str, update: Update, context: ContextTypes.DEFAUL
     except Exception as e:  # Любая другая ошибка
         return f"⚠️ Ошибка: {str(e)}"
     finally:
-        # Очищаем ссылку на процесс (независимо от результата)
-        context.user_data['running_process'] = None
+        context.user_data['running_process'] = None  # Очищаем ссылку на процесс (независимо от результата)
 
 
 # ─── Запуск тестов ────────────────────────────────────────────────────
@@ -187,14 +176,12 @@ async def run_all_tests(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # Уведомляем пользователя о начале запуска
     await update.message.reply_text("🔍 Запускаю все тесты (UI + API)...")
 
-    # Создаём директорию для результатов (или очищаем существующую)
-    results_dir = Path("./results")
+    results_dir = Path("./results")  # Создаём директорию для результатов (или очищаем существующую)
     results_dir.mkdir(exist_ok=True)  # Создаём, если не существует
     for file in results_dir.glob("*"):  # Удаляем старые файлы результатов
         file.unlink()
 
-    # Запускаем pytest с Allure-репортёрскими опциями
-    result = await execute_command(
+    result = await execute_command(  # Запускаем pytest с Allure-репортёрскими опциями
         "pytest -s -v test/ui/test_main.py test/api/test_api.py --alluredir=./results",  # -s: без захвата, -v: подробный вывод
         update, context
     )
@@ -215,14 +202,12 @@ async def run_ui_tests(update: Update, context: ContextTypes.DEFAULT_TYPE):
     Тестирует навигацию, меню, формы и другие элементы интерфейса."""
     await update.message.reply_text("🔍 Запускаю UI тесты...")
 
-    # Очищаем директорию результатов перед новым запуском
-    results_dir = Path("./results")
+    results_dir = Path("./results")  # Очищаем директорию результатов перед новым запуском
     results_dir.mkdir(exist_ok=True)
     for file in results_dir.glob("*"):
         file.unlink()
 
-    # Запускаем только UI-тесты (test_main.py)
-    result = await execute_command(
+    result = await execute_command(  # Запускаем только UI-тесты (test_main.py)
         "pytest -s -v test/ui/test_main.py --alluredir=./results",
         update, context
     )
@@ -245,8 +230,7 @@ async def run_api_tests(update: Update, context: ContextTypes.DEFAULT_TYPE):
     for file in results_dir.glob("*"):
         file.unlink()
 
-    # Запускаем только API-тесты (test_api.py)
-    result = await execute_command(
+    result = await execute_command(  # Запускаем только API-тесты (test_api.py)
         "pytest -s -v test/api/test_api.py --alluredir=./results",
         update, context
     )
@@ -265,8 +249,7 @@ async def generate_and_serve_report(update: Update, context: ContextTypes.DEFAUL
     """Генерация HTML-отчёта Allure, запуск HTTP-сервера и отправка ZIP-архива.
     Включает полный цикл: генерация → валидация → упаковка → отправка → ссылка."""
     try:
-        # Проверяем, есть ли данные для отчёта
-        results_dir = Path("./results")
+        results_dir = Path("./results")  # Проверяем, есть ли данные для отчёта
         if not results_dir.exists() or not any(results_dir.iterdir()):
             await update.message.reply_text("❌ Нет данных для отчета: папка results пуста")
             return
@@ -274,14 +257,12 @@ async def generate_and_serve_report(update: Update, context: ContextTypes.DEFAUL
         # Уведомляем о начале генерации
         await update.message.reply_text("📈 Генерирую Allure-отчет...")
 
-        # Генерируем HTML-отчёт из сырых данных Allure
-        gen_result = await execute_command(
+        gen_result = await execute_command(  # Генерируем HTML-отчёт из сырых данных Allure
             "allure generate ./results --clean -o ./allure-report",  # --clean: перезапись, -o: выходная папка
             update, context
         )
 
-        # Проверяем, что отчёт успешно сгенерировался
-        report_dir = Path("./allure-report")
+        report_dir = Path("./allure-report")  # Проверяем, что отчёт успешно сгенерировался
         report_index = report_dir / "index.html"  # Главный файл отчёта
 
         if not report_index.exists():  # Если файл не создан — ошибка генерации
@@ -291,8 +272,7 @@ async def generate_and_serve_report(update: Update, context: ContextTypes.DEFAUL
             await send_raw_results(update, context, results_dir)  # Отправляем сырые данные
             return
 
-        # Запускаем HTTP-сервер для просмотра отчёта в браузере
-        start_report_server(str(report_dir), REPORT_PORT)
+        start_report_server(str(report_dir), REPORT_PORT)  # Запускаем HTTP-сервер для просмотра отчёта в браузере
 
         # Создаём ZIP-архив с отчётом и сырыми данными
         timestamp = int(time.time())  # Уникальное имя файла на основе времени
@@ -336,8 +316,7 @@ async def generate_and_serve_report(update: Update, context: ContextTypes.DEFAUL
 async def send_raw_results(update: Update, context: ContextTypes.DEFAULT_TYPE, results_dir: Path):
     """Отправка сырых Allure-результатов как ZIP-архива.
     Используется как fallback, когда генерация HTML-отчёта не удалась."""
-    # Формируем уникальное имя архива
-    timestamp = int(time.time())
+    timestamp = int(time.time())  # Формируем уникальное имя архива
     zip_name = f"allure_results_{timestamp}.zip"
     # Упаковываем все файлы из results_dir в ZIP
     with zipfile.ZipFile(zip_name, 'w', zipfile.ZIP_DEFLATED) as zipf:
@@ -369,8 +348,7 @@ async def serve_report(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         return
 
-    # Запускаем HTTP-сервер и отправляем ссылку
-    start_report_server(str(report_dir), REPORT_PORT)
+    start_report_server(str(report_dir), REPORT_PORT)  # Запускаем HTTP-сервер и отправляем ссылку
     await update.message.reply_text(
         f"🌐 Allure отчет доступен по адресу:\n"
         f"http://localhost:{REPORT_PORT}\n\n"
@@ -421,24 +399,21 @@ async def _execute_load_test(update: Update, context: ContextTypes.DEFAULT_TYPE,
     cmd = f'"{sys.executable}" "{run_script}" {users} {spawn_rate} {run_time}'
 
     try:
-        # Запускаем процесс в поддиректории loadtest
-        proc = await asyncio.create_subprocess_shell(
+        proc = await asyncio.create_subprocess_shell(  # Запускаем процесс в поддиректории loadtest
             cmd,  # Команда запуска
             stdout=asyncio.subprocess.PIPE,  # Перехват stdout
             stderr=asyncio.subprocess.PIPE,  # Перехват stderr
             cwd=str(loadtest_dir)  # Рабочая директория — папка loadtest
         )
         context.user_data['running_process'] = proc  # Сохраняем для возможности отмены
-        # Динамический таймаут: минимум 60 сек, или 5 сек на пользователя + 30 сек запаса
-        timeout = max(60, users * 5 + 30)
+        timeout = max(60, users * 5 + 30)  # Динамический таймаут: минимум 60 сек, или 5 сек на пользователя + 30 сек запаса
         stdout, stderr = await asyncio.wait_for(proc.communicate(), timeout=timeout)
 
         # Декодируем вывод (заменяем невалидные символы)
         stdout_text = stdout.decode("utf-8", errors="replace") if stdout else ""
         stderr_text = stderr.decode("utf-8", errors="replace") if stderr else ""
 
-        # Проверяем наличие отчёта в файле
-        report_file = loadtest_dir / "loadtest_report.txt"
+        report_file = loadtest_dir / "loadtest_report.txt"  # Проверяем наличие отчёта в файле
         if report_file.exists():
             # Читаем содержимое отчёта
             with open(report_file, "r", encoding="utf-8") as f:
@@ -451,8 +426,7 @@ async def _execute_load_test(update: Update, context: ContextTypes.DEFAULT_TYPE,
             # Отправляем отчёт пользователю
             await update.message.reply_text(f"📊 Результаты нагрузочного тестирования:\n\n{report_content}")
 
-            # Создаём ZIP-архив со всеми файлами результатов Locust
-            timestamp = int(time.time())
+            timestamp = int(time.time())  # Создаём ZIP-архив со всеми файлами результатов Locust
             zip_name = f"loadtest_results_{timestamp}.zip"
             with zipfile.ZipFile(zip_name, 'w', zipfile.ZIP_DEFLATED) as zipf:
                 # Добавляем CSV, HTML и JSON файлы результатов
@@ -479,8 +453,7 @@ async def _execute_load_test(update: Update, context: ContextTypes.DEFAULT_TYPE,
     except Exception as e:  # Любая другая ошибка
         await update.message.reply_text(f"❌ Ошибка: {str(e)}")
     finally:
-        # Очищаем состояние пользователя
-        context.user_data['running_process'] = None
+        context.user_data['running_process'] = None  # Очищаем состояние пользователя
         context.user_data.pop('loadtest_state', None)  # Удаляем состояние диалога
         context.user_data.pop('loadtest_users', None)  # Удаляем сохранённых пользователей
 
@@ -491,8 +464,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Команда /start — приветствие и главное меню.
     Создаёт клавиатуру с кнопками для всех функций бота."""
     context.user_data['running_process'] = None  # Инициализируем состояние
-    # Создаём кнопки клавиатуры (каждая строка — список кнопок)
-    keyboard = [
+    keyboard = [  # Создаём кнопки клавиатуры (каждая строка — список кнопок)
         [KeyboardButton("🚀 Все тесты (UI+API)"), KeyboardButton("⏹ Стоп")],  # Запуск всех тестов и остановка
         [KeyboardButton("🧪 UI тесты"), KeyboardButton("🔌 API тесты")],  # UI и API тесты
         [KeyboardButton("⚡ Нагрузочные тесты"), KeyboardButton("⚙️ Настроить нагрузку")],  # Нагрузочные тесты
@@ -576,12 +548,10 @@ async def handle_ai_message(update: Update, context: ContextTypes.DEFAULT_TYPE, 
 
     await update.message.reply_text("⏳ Думаю...")  # Индикатор ожидания
 
-    # Получаем историю диалога и отправляем запрос к нейросети
-    history = context.user_data.get('ai_history', [])
+    history = context.user_data.get('ai_history', [])  # Получаем историю диалога и отправляем запрос к нейросети
     response = query_ai(text, history)
 
-    # Сохраняем пару вопрос-ответ в историю
-    history.append({"user": text, "bot": response})
+    history.append({"user": text, "bot": response})  # Сохраняем пару вопрос-ответ в историю
     # Ограничиваем историю 10 последними exchanges (чтобы не превысить лимит контекста)
     if len(history) > 10:
         history = history[-10:]
@@ -605,8 +575,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if await handle_ai_message(update, context, text):
         return
 
-    # Проверяем состояние диалога настройки нагрузочных тестов
-    state = context.user_data.get('loadtest_state')
+    state = context.user_data.get('loadtest_state')  # Проверяем состояние диалога настройки нагрузочных тестов
 
     # Состояние: ожидание количества пользователей
     if state == 'waiting_users':
@@ -639,10 +608,8 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
             )
             return
 
-        # Получаем ранее введённое количество пользователей (по умолчанию 10)
-        users = context.user_data.get('loadtest_users', 10)
-        # Вычисляем скорость появления пользователей (от 1 до 10, пропорционально числу пользователей)
-        spawn_rate = min(max(1, users // 5), 10)
+        users = context.user_data.get('loadtest_users', 10)  # Получаем ранее введённое количество пользователей (по умолчанию 10)
+        spawn_rate = min(max(1, users // 5), 10)  # Вычисляем скорость появления пользователей (от 1 до 10, пропорционально числу пользователей)
         await _execute_load_test(update, context, users=users, spawn_rate=spawn_rate, run_time=run_time)
         return
 
@@ -694,8 +661,7 @@ async def error_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 def main():
     """Основная функция: инициализация бота, регистрация обработчиков и запуск polling."""
-    # Получаем токен бота из переменных окружения
-    TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")
+    TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")  # Получаем токен бота из переменных окружения
     # Создаём приложение бота
     application = Application.builder().token(TELEGRAM_BOT_TOKEN).build()
 
@@ -713,11 +679,9 @@ def main():
     # Обработчик всех текстовых сообщений (не команд) — кнопки и диалоги
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
-    # Глобальный обработчик ошибок
-    application.add_error_handler(error_handler)
+    application.add_error_handler(error_handler)  # Глобальный обработчик ошибок
 
-    # Запуск long-polling (бот постоянно опрачивает Telegram API на наличие обновлений)
-    application.run_polling()
+    application.run_polling()  # Запуск long-polling (бот постоянно опрачивает Telegram API на наличие обновлений)
 
 
 # Запуск main() при прямом запуске скрипта (не при импорте)
