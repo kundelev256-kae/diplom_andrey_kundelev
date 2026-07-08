@@ -26,6 +26,7 @@ import sys  # Доступ к sys.executable для запуска Python-скр
 import requests  # HTTP-запросы к Groq API (нейросеть)
 import json  # Работа с JSON (не используется напрямую, но импортирован)
 import hashlib  # Хеширование (не используется напрямую, но импортирован)
+import webbrowser  # Автоматическое открытие отчёта в браузере
 
 # ─── Константы ───────────────────────────────────────────────────────
 
@@ -63,7 +64,7 @@ def query_ai(prompt: str, history: list = None) -> str:
         messages.append({"role": "user", "content": prompt})  # Добавляем текущий вопрос пользователя
 
         payload = {  # Тело запроса к API
-            "model": "llama3-8b-8192",  # Модель Llama 3 от Meta (8K контекст)
+            "model": "llama-3.1-8b-instant",  # Модель Llama 3.1 от Meta
             "messages": messages,  # Список сообщений
             "max_tokens": 1024,  # Максимальное количество токенов в ответе
             "temperature": 0.7  # Случайность ответа (0 = детерминированный, 1 = максимальная)
@@ -133,6 +134,7 @@ def start_report_server(report_path: str, port: int = REPORT_PORT):
     # Создаём обработчик с указанной директорией
     handler = lambda *a, **kw: ReportHandler(*a, directory=report_path, **kw)
     report_server = HTTPServer(("0.0.0.0", port), handler)  # Запускаем HTTP-сервер на 0.0.0.0 (все интерфейсы) с указанным портом
+    report_server.allow_reuse_address = True  # Разрешаем повторное использование порта (fix [Errno 98])
     # Запускаем сервер в фоновом демон-потоке (не блокирует основной поток)
     thread = threading.Thread(target=report_server.serve_forever, daemon=True)
     thread.start()
@@ -274,6 +276,8 @@ async def generate_and_serve_report(update: Update, context: ContextTypes.DEFAUL
 
         start_report_server(str(report_dir), REPORT_PORT)  # Запускаем HTTP-сервер для просмотра отчёта в браузере
 
+        webbrowser.open(f"http://localhost:{REPORT_PORT}")  # Открываем отчёт в браузере автоматически
+
         # Создаём ZIP-архив с отчётом и сырыми данными
         timestamp = int(time.time())  # Уникальное имя файла на основе времени
         zip_name = f"allure_report_{timestamp}.zip"
@@ -349,6 +353,7 @@ async def serve_report(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     start_report_server(str(report_dir), REPORT_PORT)  # Запускаем HTTP-сервер и отправляем ссылку
+    webbrowser.open(f"http://localhost:{REPORT_PORT}")  # Открываем отчёт в браузере автоматически
     await update.message.reply_text(
         f"🌐 Allure отчет доступен по адресу:\n"
         f"http://localhost:{REPORT_PORT}\n\n"
@@ -487,32 +492,40 @@ async def about(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Команда /about — подробная информация о проекте.
     Описывает все компоненты: UI-тесты, API-тесты, нагрузочные тесты, нейросеть и технологии."""
     about_text = (
-        "📋 Дипломный проект: UI + API + Load автотесты\n\n"
+        "📋 Дипломный проект: UI + API + Unit автотесты\n\n"
         "🎯 Тестируемый сайт: itstep.by\n\n"
-        "✅ UI тесты (5):\n"
+        "✅ UI тесты (4):\n"
         "• Навигация (Вакансии, Контакты)\n"
         "• Меню IT ОБРАЗОВАНИЕ (курс QA)\n"
         "• Форма обратной связи (чат)\n"
         "• Заголовок страницы\n\n"
-        "✅ API тесты (5):\n"
-        "• HTTP-статус главной страницы\n"
-        "• Время отклика\n"
-        "• HTTP→HTTPS редирект\n"
-        "• robots.txt\n"
-        "• SSL-сертификат\n\n"
+        "✅ API тесты (137):\n"
+        "• HTTP-статусы 18 страниц\n"
+        "• Время отлика (<5с)\n"
+        "• HTTP→HTTPS редиректы\n"
+        "• robots.txt и sitemap.xml\n"
+        "• SSL-сертификаты\n"
+        "• Content-Type и security-заголовки\n"
+        "• POST-запросы (позитивные)\n"
+        "• HEAD-запросы\n"
+        "• Кеширование и cookie\n\n"
+        "✅ Unit тесты (137):\n"
+        "• Тесты Telegram-бота\n"
+        "• Тесты API-клиента\n"
+        "• Тесты элементов страниц\n\n"
         "⚡ Нагрузочные тесты:\n"
         "• 11 сценариев (главная, вакансии, курсы и др.)\n"
         "• 10 виртуальных пользователей\n"
         "• Метрики: RPS, percentile, время отклика\n\n"
         "🤖 Нейросеть:\n"
-        "• Бесплатная модель blenderbot-400M-distill\n"
+        "• Groq API (Llama 3.1 8B)\n"
         "• Ввод /ai для начала диалога\n"
         "• Ввод /ai_stop для остановки\n\n"
         "🛠 Технологии:\n"
         "• Python + Selenium + Requests\n"
         "• Pytest + Allure + Locust\n"
         "• Page Object Model\n"
-        "• Telegram бот для управления"
+        "• Telegram бот с AI-ассистентом"
     )
     await update.message.reply_text(about_text)  # Отправляем текст информации
 
@@ -681,7 +694,7 @@ def main():
 
     application.add_error_handler(error_handler)  # Глобальный обработчик ошибок
 
-    application.run_polling()  # Запуск long-polling (бот постоянно опрачивает Telegram API на наличие обновлений)
+    application.run_polling(drop_pending_updates=True)  # Запуск long-polling с очисткой очереди от предыдущих экземпляров
 
 
 # Запуск main() при прямом запуске скрипта (не при импорте)

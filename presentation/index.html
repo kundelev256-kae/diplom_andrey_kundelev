@@ -527,9 +527,9 @@
 
 <section class="hero" id="top">
     <div class="hero-content">
-        <div class="hero-tag">AQA Engineer</div>
+        <div class="hero-tag">QA Automation Engineer</div>
         <h1><span class="gradient">Андрей Кунделев</span></h1>
-        <p>Автоматизирую тестирование UI и API. Делаю продукты надёжными через код.</p>
+        <p>Автоматизирую тестирование UI, API и нагрузки. Делаю продукты надёжными через код и AI.</p>
         <div class="hero-btns">
             <a href="#runner" class="btn btn-primary">Запустить тесты</a>
             <a href="#contact" class="btn btn-ghost">Связаться</a>
@@ -542,20 +542,20 @@
     <div class="about-grid">
         <div class="about-text fade-up">
             <p>QA Automation Engineer с фокусом на автоматизацию тестирования веб-приложений. Пишу тесты на Python, строю Page Object архитектуру, настраиваю CI/CD пайплайны.</p>
-            <p>Выпускник IT Академии STEP Беларусь. Дипломный проект — автоматизация тестирования сайта itstep.by с Telegram-ботом для удалённого управления.</p>
+            <p>Выпускник IT Академии STEP Беларусь. Дипломный проект — автоматизация тестирования сайта itstep.by с Telegram-ботом для удалённого управления и AI-ассистентом на базе Groq (Llama 3.1).</p>
         </div>
         <div class="about-stats fade-up">
             <div class="about-stat">
-                <div class="num">141+</div>
-                <div class="lbl">автотестов написано</div>
+                <div class="num">278</div>
+                <div class="lbl">автотестов (UI + API + Unit)</div>
             </div>
             <div class="about-stat">
-                <div class="num">UI + API</div>
-                <div class="lbl">полное покрытие</div>
+                <div class="num">11</div>
+                <div class="lbl">нагрузочных сценариев</div>
             </div>
             <div class="about-stat">
-                <div class="num">POM</div>
-                <div class="lbl">Page Object Model</div>
+                <div class="num">AI</div>
+                <div class="lbl">Groq + Llama 3.1</div>
             </div>
         </div>
     </div>
@@ -573,34 +573,38 @@
         <div class="stack-item"><div class="stack-icon">📊</div><div class="stack-name">Allure</div></div>
         <div class="stack-item"><div class="stack-icon">⚡</div><div class="stack-name">xdist</div></div>
         <div class="stack-item"><div class="stack-icon">🧬</div><div class="stack-name">Locust</div></div>
+        <div class="stack-item"><div class="stack-icon">🤖</div><div class="stack-name">Groq API</div></div>
+        <div class="stack-item"><div class="stack-icon">💬</div><div class="stack-name">Telegram Bot</div></div>
         <div class="stack-item"><div class="stack-icon">🐙</div><div class="stack-name">Git</div></div>
-        <div class="stack-item"><div class="stack-icon">🔧</div><div class="stack-name">Docker</div></div>
     </div>
 </section>
 
 <section id="project">
     <div class="section-label">Дипломный проект</div>
     <h2 class="section-title">Автоматизация тестирования itstep.by</h2>
-    <p class="section-desc">Полный цикл: UI-тесты, API-тесты, нагрузочные тесты, Telegram-бот с AI-ассистентом.</p>
+    <p class="section-desc">Полный цикл: UI-тесты, API-тесты, нагрузочные тесты, Telegram-бот с AI-ассистентом на базе Groq (Llama 3.1).</p>
     <div class="project-card fade-up">
         <div class="project-header">
             <div class="project-title">Selenium POM Suite</div>
             <div class="project-badge">Завершён</div>
         </div>
         <div class="project-body">
-            <p>Система автоматизированного тестирования сайта IT Академии STEP. Включает 141+ тестов, Page Object архитектуру, Allure-отчёты и Telegram-бота для удалённого запуска.</p>
+            <p>Система автоматизированного тестирования сайта IT Академии STEP. Включает 278 тестов (4 UI + 137 API + 137 Unit), Page Object архитектуру, Allure-отчёты, нагрузочные тесты через Locust и Telegram-бота с AI-ассистентом для удалённого запуска.</p>
             <div class="project-tags">
                 <span class="project-tag">Selenium</span>
                 <span class="project-tag">pytest</span>
                 <span class="project-tag">POM</span>
                 <span class="project-tag">Allure</span>
-                <span class="project-tag">Telegram Bot</span>
                 <span class="project-tag">Locust</span>
+                <span class="project-tag">Telegram Bot</span>
+                <span class="project-tag">Groq API</span>
+                <span class="project-tag">Llama 3.1</span>
+                <span class="project-tag">Unit Tests</span>
             </div>
             <div class="project-metrics">
-                <div><div class="metric-val">141+</div><div class="metric-lbl">тестов</div></div>
-                <div><div class="metric-val">4</div><div class="metric-lbl">UI тестов</div></div>
-                <div><div class="metric-val">137+</div><div class="metric-lbl">API тестов</div></div>
+                <div><div class="metric-val">278</div><div class="metric-lbl">автотестов</div></div>
+                <div><div class="metric-val">4 + 137 + 137</div><div class="metric-lbl">UI / API / Unit</div></div>
+                <div><div class="metric-val">11</div><div class="metric-lbl">нагрузочных сценариев</div></div>
             </div>
         </div>
     </div>
@@ -686,6 +690,66 @@
                     <input type="checkbox" class="test-cb" data-suite="api" data-test="test_ssl_certificate_valid" checked>
                     <span class="cb-mark"></span>
                     <span class="cb-label">test_ssl_certificate_valid</span>
+                </label>
+                <label class="cb-wrap">
+                    <input type="checkbox" class="test-cb" data-suite="api" data-test="test_vacancies_status" checked>
+                    <span class="cb-mark"></span>
+                    <span class="cb-label">test_vacancies_status</span>
+                </label>
+                <label class="cb-wrap">
+                    <input type="checkbox" class="test-cb" data-suite="api" data-test="test_contacts_status" checked>
+                    <span class="cb-mark"></span>
+                    <span class="cb-label">test_contacts_status</span>
+                </label>
+                <label class="cb-wrap">
+                    <input type="checkbox" class="test-cb" data-suite="api" data-test="test_ssl_certificate_not_expired" checked>
+                    <span class="cb-mark"></span>
+                    <span class="cb-label">test_ssl_certificate_not_expired</span>
+                </label>
+                <label class="cb-wrap">
+                    <input type="checkbox" class="test-cb" data-suite="api" data-test="test_news_status" checked>
+                    <span class="cb-mark"></span>
+                    <span class="cb-label">test_news_status</span>
+                </label>
+                <label class="cb-wrap">
+                    <input type="checkbox" class="test-cb" data-suite="api" data-test="test_qa_course_status" checked>
+                    <span class="cb-mark"></span>
+                    <span class="cb-label">test_qa_course_status</span>
+                </label>
+                <label class="cb-wrap">
+                    <input type="checkbox" class="test-cb" data-suite="api" data-test="test_python_course_status" checked>
+                    <span class="cb-mark"></span>
+                    <span class="cb-label">test_python_course_status</span>
+                </label>
+                <label class="cb-wrap">
+                    <input type="checkbox" class="test-cb" data-suite="api" data-test="test_ssl_certificate_domain" checked>
+                    <span class="cb-mark"></span>
+                    <span class="cb-label">test_ssl_certificate_domain</span>
+                </label>
+                <label class="cb-wrap">
+                    <input type="checkbox" class="test-cb" data-suite="api" data-test="test_main_page_content_type" checked>
+                    <span class="cb-mark"></span>
+                    <span class="cb-label">test_main_page_content_type</span>
+                </label>
+                <label class="cb-wrap">
+                    <input type="checkbox" class="test-cb" data-suite="api" data-test="test_robots_txt_content" checked>
+                    <span class="cb-mark"></span>
+                    <span class="cb-label">test_robots_txt_content</span>
+                </label>
+                <label class="cb-wrap">
+                    <input type="checkbox" class="test-cb" data-suite="api" data-test="test_head_main_page" checked>
+                    <span class="cb-mark"></span>
+                    <span class="cb-label">test_head_main_page</span>
+                </label>
+                <label class="cb-wrap">
+                    <input type="checkbox" class="test-cb" data-suite="api" data-test="test_cache_headers" checked>
+                    <span class="cb-mark"></span>
+                    <span class="cb-label">test_cache_headers</span>
+                </label>
+                <label class="cb-wrap">
+                    <input type="checkbox" class="test-cb" data-suite="api" data-test="test_post_json_to_main" checked>
+                    <span class="cb-mark"></span>
+                    <span class="cb-label">test_post_json_to_main</span>
                 </label>
                 <div class="settings-row">
                     <label>Таймаут:</label>
@@ -800,7 +864,7 @@
 </section>
 
 <footer>
-    <p>Андрей Кунделев · 2026 · Python · Selenium · pytest</p>
+    <p>Андрей Кунделев · 2026 · Python · Selenium · pytest · Locust · Groq</p>
 </footer>
 
 <!-- ALLURE REPORT MODAL -->
@@ -827,7 +891,7 @@
             <div class="ai-header-left">
                 <div class="ai-avatar">✦</div>
                 <div>
-                    <div class="ai-name">QA Assistant</div>
+                    <div class="ai-name">QA Assistant (Groq)</div>
                     <div class="ai-status">онлайн</div>
                 </div>
             </div>
@@ -835,7 +899,7 @@
         </div>
         <div class="ai-messages" id="aiMessages">
             <div class="ai-msg bot">
-                Привет! Я QA-ассистент. Могу рассказать о проекте, стеке технологий или принципах автоматизации тестирования. Задай вопрос.
+                Привет! Я QA-ассистент проекта на базе Groq (Llama 3.1). Могу рассказать о проекте, стеке технологий или принципах автоматизации тестирования. Задай вопрос.
             </div>
         </div>
         <div class="ai-input-bar">
@@ -886,9 +950,18 @@ const API_TESTS = [
     { name: 'test_security_headers_present', title: 'Наличие security-заголовков', time: () => 0.3 + Math.random() * 0.5 },
     { name: 'test_robots_txt_status', title: 'robots.txt доступен', time: () => 0.2 + Math.random() * 0.3 },
     { name: 'test_ssl_certificate_valid', title: 'SSL-сертификат валиден', time: () => 0.3 + Math.random() * 0.4 },
+    { name: 'test_vacancies_status', title: 'HTTP статус страницы вакансий', time: () => 0.2 + Math.random() * 0.4 },
+    { name: 'test_contacts_status', title: 'HTTP статус страницы контактов', time: () => 0.2 + Math.random() * 0.4 },
+    { name: 'test_ssl_certificate_not_expired', title: 'SSL-сертификат не просрочен', time: () => 0.3 + Math.random() * 0.3 },
+    { name: 'test_news_status', title: 'HTTP статус страницы новостей', time: () => 0.2 + Math.random() * 0.4 },
+    { name: 'test_qa_course_status', title: 'HTTP статус курса QA', time: () => 0.2 + Math.random() * 0.4 },
+    { name: 'test_python_course_status', title: 'HTTP статус курса Python', time: () => 0.2 + Math.random() * 0.4 },
+    { name: 'test_ssl_certificate_domain', title: 'SSL-сертификат для правильного домена', time: () => 0.3 + Math.random() * 0.3 },
     { name: 'test_main_page_content_type', title: 'Content-Type главной страницы', time: () => 0.2 + Math.random() * 0.3 },
+    { name: 'test_robots_txt_content', title: 'robots.txt содержит User-agent', time: () => 0.2 + Math.random() * 0.2 },
     { name: 'test_head_main_page', title: 'HEAD-запрос главной страницы', time: () => 0.2 + Math.random() * 0.3 },
     { name: 'test_cache_headers', title: 'Заголовки кеширования', time: () => 0.3 + Math.random() * 0.4 },
+    { name: 'test_post_json_to_main', title: 'POST JSON на главную', time: () => 0.3 + Math.random() * 0.5 },
 ];
 
 async function runTests() {
@@ -930,7 +1003,7 @@ async function runTests() {
     termWrite(`<span class="t-dim">$ </span>${escHtml(cmd)}`);
     await sleep(300);
     termWrite(`<span class="t-dim">============================= test session starts =============================</span>`);
-    termWrite(`<span class="t-dim">platform win32 -- Python 3.14.0, pytest-8.3.5, pluggy-1.5.0</span>`);
+    termWrite(`<span class="t-dim">platform linux -- Python 3.12.3, pytest-8.3.5, pluggy-1.5.0</span>`);
     termWrite(`<span class="t-dim">cachedir: .pytest_cache</span>`);
     termWrite(`<span class="t-dim">rootdir: /home/andrey/PycharmProjects/diplom_andrey_kundelev2</span>`);
     termWrite(`<span class="t-dim">configfile: pyproject.toml</span>`);
@@ -1198,17 +1271,19 @@ aiOverlay.addEventListener('click', (e) => { if (e.target === aiOverlay) aiOverl
 
 const AI_RESPONSES = {
     'привет': 'Привет! Я QA-ассистент проекта. Могу рассказать о стеке, архитектуре или принципах тестирования.',
-    'стек': 'Стек проекта: Python 3.14, Selenium для UI-тестов, pytest как фреймворк, Allure для отчётов, requests для API-тестов, Locust для нагрузки, python-telegram-bot для бота.',
-    'тест': 'Проект содержит 141+ тестов: 4 UI-теста (Selenium + Page Object Model) и 137+ API-тестов (requests). Все запускаются через pytest с автогенерацией Allure-отчётов.',
+    'стек': 'Стек проекта: Python 3.12, Selenium для UI-тестов, pytest как фреймворк, Allure для отчётов, requests для API-тестов, Locust для нагрузки, python-telegram-bot для бота, Groq API (Llama 3.1) для AI-ассистента.',
+    'тест': 'Проект содержит 278 тестов: 4 UI-теста (Selenium + POM), 137 API-тестов (requests) и 137 unit-тестов. Все запускаются через pytest с автогенерацией Allure-отчётов.',
     'pom': 'Page Object Model — паттерн проектирования, где каждая страница сайта представлена отдельным классом. Базовый класс WebPage содержит общие методы (open, find, click), а наследники — локаторы и специфичные действия.',
     'allure': 'Allure Report — инструмент визуализации результатов тестов. Показывает шаги, скриншоты при ошибках, историю запусков. Генерируется командой: allure generate ./results --clean -o ./allure-report',
-    'bot': 'Telegram-бот позволяет удалённо запускать тесты, получать отчёты и общаться с AI-ассистентом. Команды: /run_all, /run_ui, /run_api, /run_load, /report, /ai',
+    'bot': 'Telegram-бот позволяет удалённо запускать тесты, получать отчёты и общаться с AI-ассистентом на базе Groq (Llama 3.1). Команды: /run_all, /run_ui, /run_api, /run_load, /report, /ai',
     'locust': 'Locust — Python-фреймворк для нагрузочного тестирования. В проекте имитирует 10-100 пользователей, обращющихся к 11 эндпоинтам itstep.by. Результаты: RPS, p50/p95/p99 латентность.',
     'selenium': 'Selenium WebDriver управляет реальным браузером Chrome. В проекте используется headless-режим для CI, explicit waits через WebDriverWait, и паттерн POM для структурирования кода.',
-    'api': 'API-тесты проверяют: HTTP-статусы, время отклика (<5с), HTTP->HTTPS редиректы, robots.txt, SSL-сертификаты. Используется requests.Session с кастомными заголовками.',
+    'api': 'API-тесты проверяют: HTTP-статусы 18 страниц, время отклика (<5с), HTTP->HTTPS редиректы, robots.txt, SSL-сертификаты, Content-Type, security-заголовки. Используется requests.Session с кастомными заголовками.',
     'ci': 'Проект готов к CI/CD: pytest --headless для бесхостного запуска, Allure для отчётов, pytest-xdist для параллелизации. Подходит для GitHub Actions, GitLab CI.',
-    'о проекте': 'Дипломный проект: "Автоматизация тестирования UI и API сайта itstep.by". Разработчик: Андрей Кунделев, IT Академия STEP Беларусь, 2026.',
-    'default': 'Интересный вопрос! Я специализируюсь на QA-автоматизации. Спроси о стеке, POM, Selenium, pytest, Allure, Locust или API-тестировании.'
+    'groq': 'Groq API — быстрый инференс нейросетей. Используется модель Llama 3.1 (8B) для ответов на вопросы в Telegram-боте. Бесплатный tier с лимитами.',
+    'llama': 'Llama 3.1 от Meta — open-source LLM. В проекте используется 8B-версия через Groq API для AI-ассистента в боте.',
+    'о проекте': 'Дипломный проект: "Автоматизация тестирования UI и API сайта itstep.by". Разработчик: Андрей Кунделев, IT Академия STEP Беларусь, 2026. Включает 278 тестов (4 UI + 137 API + 137 Unit), нагрузочные тесты и Telegram-бота с AI.',
+    'default': 'Интересный вопрос! Я специализируюсь на QA-автоматизации. Спроси о стеке, POM, Selenium, pytest, Allure, Locust, API-тестировании или Groq/Llama.'
 };
 
 function sendAiMessage() {
