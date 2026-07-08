@@ -117,7 +117,7 @@ def pytest_configure(config):
 
 def pytest_sessionfinish(session, exitstatus):
     import subprocess
-    subprocess.Popen(["allure", "serve", "allure-results"])
+    subprocess.Popen(["/tmp/allure-2.32.0/bin/allure", "serve", "allure-results"])
 
 
 # Хук pytest для добавления пользовательских командных опций через консоль
