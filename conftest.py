@@ -115,6 +115,11 @@ def pytest_configure(config):
     config.option.clean_alluredir = True
 
 
+def pytest_sessionfinish(session, exitstatus):
+    import subprocess
+    subprocess.Popen(["allure", "serve", "allure-results"])
+
+
 # Хук pytest для добавления пользовательских командных опций через консоль
 def pytest_addoption(parser):
     # Опция --browser: выбор браузера для запуска тестов (по умолчанию chrome), может быть расширена на firefox и др.
